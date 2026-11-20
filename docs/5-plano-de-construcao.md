@@ -33,7 +33,7 @@ O maior risco de um jogo de tiro em primeira pessoa no toque é o **controle ser
 - Dormir e salvar; save no aparelho com 3 espaços; desmaio; 3 dificuldades.
 - Sons e música do Vale.
 - **Pronto quando:** cerca de 20 minutos de jogo do começo até a bateria, sem travar, e uma criança consegue jogar sem ajuda.
-- Script `ferramentas/montar-site.mjs` (cópia para o site com a versão nos endereços, ver 4.13).
+- Script `ferramentas/montar-site.mjs` (cópia para o site com a versão nos endereços, ver 4.13). **Feito antes, em 20/11/2026**, para dar para testar a Etapa 0 no queres.games.
 - **Publicar no queres.games** para o Jojô e o Bento testarem (pedir numa sessão do repositório `queres-games`).
 
 ### Etapa 2: Floresta Lumina (2 a 3 sessões)
@@ -89,6 +89,10 @@ O maior risco de um jogo de tiro em primeira pessoa no toque é o **controle ser
 - Desintegrador de teste com superaquecimento e bolhas de treino; ajuda na mira (forte, média ou desligada) **sem tiro automático**.
 - HUD: bússola com o Colosso e a nave, mira, calor da arma, mensagens da ÍRIS, botão de ação; pausa (também ao esconder a aba), opções guardadas no aparelho, "gire o aparelho", resolução automática.
 - Sons sintetizados (tiro, passos, pulo, estouro, vento).
+
+## Onde testar no aparelho
+
+A prévia privada do claude.ai **não abre no iPadOS 18.7** (o visualizador do app do Claude mostra "This browser isn't supported"), mas o jogo funciona a partir do iOS 16.4. Por isso o teste no iPad e no iPhone das crianças é feito pelo queres.games: uma sessão do repositório `queres-games` roda `node <pasta do Jojo-4>/ferramentas/montar-site.mjs public/jogar/rumo-a-terra`, grava a versão e publica (card como "em desenvolvimento").
 
 ## Riscos e como evitar
 
