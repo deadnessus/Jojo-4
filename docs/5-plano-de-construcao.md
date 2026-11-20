@@ -110,7 +110,7 @@ A prévia privada do claude.ai **não abre no iPadOS 18.7** (o visualizador do a
 
 - [x] Plano, história, pesquisa e arquitetura (este documento)
 - [x] Decisões respondidas (documento 6)
-- [ ] Etapa 0: fundação — **programada e testada no computador (20/11/2026)**; falta o dono testar no iPad e no iPhone e escolher o visual (D11)
+- [ ] Etapa 0: fundação — **programada, testada no computador e publicada em `queres.games/jogar/rumo-a-terra/` como "em desenvolvimento" (20/11/2026, commit `c4b28d5`, PR #67 do queres-games)**; falta o dono testar no iPad e no iPhone e escolher o visual (D11)
 - [ ] Etapa 1: Vale da Queda (primeira versão jogável)
 - [ ] Etapa 2: Floresta Lumina
 - [ ] Etapa 3: salvar na nuvem
