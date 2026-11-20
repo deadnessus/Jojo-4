@@ -229,7 +229,13 @@ async function testarColeta(page, toque, conferir, nome) {
   await tocar('button[data-receita="bloco_madeira"]');
   await page.screenshot({ path: join(pastaCapturas, `${nome}-criar.png`) });
   const tem = await page.evaluate(() => ({ machado: window.__rumo.inventario.quantos('machado'), blocos: window.__rumo.inventario.quantos('bloco_madeira') }));
+  const soReceitas = await page.evaluate(() => getComputedStyle(document.getElementById('painel-mochila')).display === 'none' && !!document.querySelector('#painel-criar [data-receita="picareta"]'));
+  conferir(soReceitas, 'a aba Criar mostra só as receitas (a Picareta de pedra aparece logo no começo)');
   conferir(tem.machado === 1 && tem.blocos === 4, `criar machado e blocos pela tela (machado ${tem.machado}, blocos ${tem.blocos})`);
+  await page.evaluate(() => { const i = window.__rumo.inventario; i.adicionar('madeira', 2); i.adicionar('pedra', 3); i.adicionar('fibra', 1); });
+  await tocar('#aba-criar');
+  await tocar('button[data-receita="picareta"]');
+  conferir(await page.evaluate(() => window.__rumo.inventario.quantos('picareta')) === 1, 'criar a Picareta de pedra pela aba Criar');
 
   // colocar blocos: aba Mochila -> Colocar -> mirar no chão -> Colocar
   await tocar('#aba-mochila');
