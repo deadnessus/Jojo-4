@@ -2,37 +2,107 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Meu Jogo (modelo)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0b1020">
+<title>Rumo à Terra</title>
 <link rel="stylesheet" href="style.css">
+<!-- A biblioteca 3D fica guardada dentro do jogo (vendor/), sem nenhum site de fora. -->
+<script type="importmap">
+{ "imports": { "three": "./vendor/three/three.module.min.js" } }
+</script>
 </head>
 <body>
-<!-- JOGO-MODELO do queres.games: um exemplo mínimo e funcional. TROQUE pelo seu jogo, mantendo as boas práticas:
-     charset e viewport, caminhos relativos, nada de sites externos, botões com id, pausa ao esconder a aba. -->
-<main id="app">
-  <header class="barra">
-    <span id="placar">0</span>
-    <span id="tempo">20</span>
-    <button id="btn-pausar" type="button" aria-label="Pausar">II</button>
-  </header>
-  <canvas id="campo" aria-label="Área do jogo"></canvas>
+<!-- Rumo à Terra, jogo do Jojô para o queres.games. Etapa 0: andar, olhar, pular e treinar a mira.
+     Plano completo em docs/README.md. Botões com id fixo: a telemetria do site conta os toques pelo id. -->
+<canvas id="tela3d" aria-label="Mundo do jogo"></canvas>
 
-  <section id="tela-inicio" class="tela">
-    <h1>Meu Jogo</h1>
-    <p>Toque nos círculos antes que o tempo acabe.</p>
+<div id="camada-toque" aria-hidden="true"></div>
+<div id="joy-base" hidden></div>
+<div id="joy-pino" hidden></div>
+
+<div id="hud" hidden>
+  <div id="bussola" aria-hidden="true"><div id="bussola-fita"></div><div id="bussola-centro"></div></div>
+  <div id="mira" class="normal" aria-hidden="true"></div>
+  <div id="calor" aria-hidden="true"><div id="calor-barra"></div></div>
+  <div id="contador-alvos" hidden></div>
+  <div id="mensagem" role="status" hidden><span class="quem">ÍRIS</span><span id="mensagem-texto"></span></div>
+  <pre id="debug" hidden></pre>
+  <button id="btn-pausar" type="button" aria-label="Pausar">II</button>
+  <div id="controles-toque">
+    <button id="btn-acao" type="button" hidden><span class="icone" aria-hidden="true">✋</span><span id="btn-acao-texto">Examinar</span></button>
+    <button id="btn-pular" type="button" aria-label="Pular"><span aria-hidden="true">⤒</span></button>
+    <button id="btn-atirar" type="button" aria-label="Atirar"><span aria-hidden="true">✦</span></button>
+  </div>
+</div>
+
+<section id="tela-carregando" class="tela fundo-escuro">
+  <h1 class="titulo">RUMO À TERRA</h1>
+  <div class="barra-carregando"><div id="carregando-barra"></div></div>
+  <p id="carregando-texto">Carregando...</p>
+  <noscript><p>Este jogo precisa de JavaScript ligado.</p></noscript>
+</section>
+
+<section id="tela-inicio" class="tela" hidden>
+  <div class="cartao">
+    <h1 class="titulo">RUMO À TERRA</h1>
+    <p class="subtitulo">Sua nave caiu num planeta desconhecido. Conserte a Andorinha e volte para casa.</p>
     <button id="btn-jogar" class="grande" type="button">Jogar</button>
-  </section>
-  <section id="tela-pausa" class="tela" hidden>
+    <button id="btn-opcoes" type="button">Opções</button>
+    <p class="nota">Versão de teste (Etapa 0): andar, olhar, pular e treinar a mira.</p>
+  </div>
+</section>
+
+<section id="tela-pausa" class="tela" hidden>
+  <div class="cartao">
     <h2>Pausado</h2>
     <button id="btn-continuar" class="grande" type="button">Continuar</button>
+    <button id="btn-opcoes-pausa" type="button">Opções</button>
     <button id="btn-sair" type="button">Sair para o início</button>
-  </section>
-  <section id="tela-fim" class="tela" hidden>
-    <h2>Fim!</h2>
-    <p id="fim-texto"></p>
-    <button id="btn-de-novo" class="grande" type="button">Jogar de novo</button>
-  </section>
-</main>
-<script src="src/main.js"></script>
+  </div>
+</section>
+
+<section id="tela-opcoes" class="tela" hidden>
+  <div class="cartao opcoes">
+    <h2>Opções</h2>
+    <label class="linha">Sensibilidade do olhar <b id="opt-sensibilidade-valor"></b>
+      <input id="opt-sensibilidade" type="range" min="1" max="10" step="1"></label>
+    <label class="linha caixa"><input id="opt-inverter" type="checkbox"> Inverter o olhar para cima e para baixo</label>
+    <div class="linha">Visual
+      <div class="grupo"><button type="button" data-visual="pixelado">Anos 90 (pixelado)</button><button type="button" data-visual="liso">Liso</button></div></div>
+    <div class="linha">Qualidade
+      <div class="grupo"><button type="button" data-qualidade="auto">Automática</button><button type="button" data-qualidade="leve">Leve</button><button type="button" data-qualidade="bonita">Bonita</button></div></div>
+    <div class="linha">Ajuda na mira
+      <div class="grupo"><button type="button" data-mira="forte">Forte</button><button type="button" data-mira="media">Média</button><button type="button" data-mira="desligada">Desligada</button></div></div>
+    <div class="linha">Tamanho dos botões
+      <div class="grupo"><button type="button" data-botoes="normal">Normal</button><button type="button" data-botoes="grande">Grande</button></div></div>
+    <label class="linha caixa"><input id="opt-tremor" type="checkbox"> Reduzir o balanço da câmera</label>
+    <label class="linha">Volume <b id="opt-volume-valor"></b>
+      <input id="opt-volume" type="range" min="0" max="10" step="1"></label>
+    <button id="btn-voltar-opcoes" class="grande" type="button">Voltar</button>
+  </div>
+</section>
+
+<section id="tela-erro" class="tela fundo-escuro" hidden>
+  <div class="cartao">
+    <h2>Ops!</h2>
+    <p id="erro-texto"></p>
+    <button id="btn-recarregar" class="grande" type="button">Tentar de novo</button>
+  </div>
+</section>
+
+<section id="tela-girar" hidden>
+  <div class="aparelho" aria-hidden="true"></div>
+  <p>Gire o aparelho e jogue deitado</p>
+</section>
+
+<script>
+  // Aparelhos muito antigos não entendem o "import map": avisa em vez de ficar numa tela parada.
+  if (!(window.HTMLScriptElement && HTMLScriptElement.supports && HTMLScriptElement.supports('importmap'))) {
+    document.getElementById('carregando-texto').textContent = 'Este navegador é antigo demais para o jogo. Atualize o iOS (16.4 ou mais novo).';
+  }
+</script>
+<script type="module" src="src/main.js"></script>
 </body>
 </html>

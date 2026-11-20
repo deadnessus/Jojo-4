@@ -1,0 +1,10 @@
+{
+  "name": "rumo-a-terra",
+  "private": true,
+  "type": "module",
+  "description": "Rumo à Terra: jogo do Jojô para o queres.games. Não precisa instalar nada; este arquivo só guarda os comandos de teste.",
+  "scripts": {
+    "test": "node --test tests/logica/*.test.mjs",
+    "fumaca": "node tests/fumaca.mjs"
+  }
+}

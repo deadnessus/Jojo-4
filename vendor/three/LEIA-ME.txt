@@ -1,0 +1,3 @@
+Three.js r170 (https://threejs.org), licença MIT (ver LICENSE).
+Cópia de build/three.module.min.js do pacote npm three@0.170.0, guardada aqui para o jogo não depender de nenhum site de fora.
+Para trocar de versão: baixe o pacote, copie o mesmo arquivo e o LICENSE, e teste no iPad e no iPhone.

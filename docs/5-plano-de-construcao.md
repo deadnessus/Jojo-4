@@ -70,6 +70,26 @@ O maior risco de um jogo de tiro em primeira pessoa no toque é o **controle ser
 - Ajustes pelos números do painel (sempre por issue aprovada).
 - Acessibilidade, aparelhos mais antigos, música, chuva de meteoros, diário de criaturas completo, receitas.
 
+## Como rodar e testar (para quem programa)
+
+- **Jogar no computador:** `python3 -m http.server 8140` na raiz do repositório e abrir `http://localhost:8140/` (precisa de servidor: o jogo usa módulos JavaScript).
+- **Testes de lógica:** `npm test` (só Node, sem instalar nada).
+- **Teste de fumaça:** `node tests/fumaca.mjs [pasta-das-capturas]`. Abre o jogo no Chromium deitado como iPhone e como iPad (com toque) e no computador, e confere carregar sem erro, joystick, olhar, dois dedos, atirar (e mirar arrastando no botão), pular, ação, pausa, "gire o aparelho" e os dois visuais.
+- **Endereços de teste:** `?debug=1` mostra quadros por segundo, chamadas de desenho e triângulos; `?visual=liso` ou `?visual=pixelado`; `?hora=0.75` muda a hora do céu (0,25 nasce, 0,5 meio-dia, 0,75 pôr do sol).
+- **Verificador do queres.games:** `node .claude/skills/preparar-jogo-para-queres-games/verificar-jogo.mjs .`
+
+## O que a Etapa 0 entregou
+
+- Three.js r170 em `vendor/three/`; import map com caminho relativo.
+- Vale da Queda de teste: relevo com semente (clareira da nave, lago, trilhas, colinas, paredões nas bordas), grama-pena, arbustos-chama, árvores-taça com frutas-lanterna, pedras, cristais que brilham, a Andorinha caída provisória (com fumaça, destroços e o rastro queimado).
+- Céu com a Brasa e o Colosso com anéis (sempre ao norte), névoa e o ciclo de cores pronto (a hora fica parada até a Etapa 1).
+- Dois visuais trocáveis nas opções: **anos 90 (pixelado)** e **liso**.
+- Controles: joystick flutuante, arrastar para olhar (com aceleração leve), ATIRAR que também mira, PULAR, AÇÃO; teclado e mouse; controle de videogame.
+- Jogador com gravidade de 0,8 g, rampas, colisão com troncos, pedras e a nave, água funda bloqueada.
+- Desintegrador de teste com superaquecimento e bolhas de treino; ajuda na mira (forte, média ou desligada) **sem tiro automático**.
+- HUD: bússola com o Colosso e a nave, mira, calor da arma, mensagens da ÍRIS, botão de ação; pausa (também ao esconder a aba), opções guardadas no aparelho, "gire o aparelho", resolução automática.
+- Sons sintetizados (tiro, passos, pulo, estouro, vento).
+
 ## Riscos e como evitar
 
 | Risco | Como evitar |
@@ -86,7 +106,7 @@ O maior risco de um jogo de tiro em primeira pessoa no toque é o **controle ser
 
 - [x] Plano, história, pesquisa e arquitetura (este documento)
 - [x] Decisões respondidas (documento 6)
-- [ ] Etapa 0: fundação
+- [ ] Etapa 0: fundação — **programada e testada no computador (20/11/2026)**; falta o dono testar no iPad e no iPhone e escolher o visual (D11)
 - [ ] Etapa 1: Vale da Queda (primeira versão jogável)
 - [ ] Etapa 2: Floresta Lumina
 - [ ] Etapa 3: salvar na nuvem

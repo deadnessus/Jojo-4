@@ -26,3 +26,5 @@ Quando alguém (uma pessoa ou uma rotina automática) achar um problema ou uma i
 
 ## Este jogo (plano em `docs/`)
 O jogo planejado é um tiro/aventura em primeira pessoa num planeta alienígena (consertar a nave, comida que estraga, bichos selvagens), para iPad/iPhone deitados. História, peças da nave, controles, arquitetura técnica, etapas e decisões estão em `docs/`. **Antes de programar, leia `docs/README.md`** e siga `docs/5-plano-de-construcao.md`, uma etapa por vez, respeitando as respostas de `docs/6-decisoes.md`.
+
+**Como rodar e testar:** `python3 -m http.server 8140` e abrir `http://localhost:8140/` (`?debug=1` mostra o desempenho); `npm test` (lógica) e `node tests/fumaca.mjs` (abre o jogo no Chromium como iPhone, iPad e computador e testa os controles). Detalhes em `docs/5-plano-de-construcao.md`.
