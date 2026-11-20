@@ -31,8 +31,8 @@ Naves como a Andorinha viajam entre estrelas aos **saltos**. Depois de cada salt
 ### Ato 3: o cristal
 - O Ulo conta o segredo: os cristais ficam nas **Cavernas de Cristal**, embaixo das **Ruínas dos Antigos**, um povo que viveu ali muito tempo atrás e foi embora para as estrelas. Ele tentou entrar há 100 anos e desistiu. A porta pede a **Chave dos Antigos**, quebrada em 3 pedaços.
 - Último registro do Tavares: a Expedição consertou a nave dela com a ajuda do Ulo e foi embora antes da próxima chuva de meteoros. O Tavares se perdeu numa tempestade e não voltou a tempo. A última frase dele: *"Se alguém achar isto: o caminho para casa começa na casa-cogumelo."* (É uma história um pouco triste, mas sem susto.)
-- Dentro das cavernas: quebra-cabeças de luz e o **Guardião de Cristal**, uma máquina dos Antigos que é o chefe final. Atrás dele há **dois** cristais: um para você e um para a nave do Ulo.
-- **Final:** você abastece a nave, faz a lista de verificação do lançamento ("Energia? OK! Combustível? OK!"), contagem regressiva e decolagem. A nave do Ulo decola ao lado. No espaço, o salto... e a **Terra azul** aparece na janela. Créditos com "o que aconteceu com cada um" (o Bolota vai junto!).
+- Dentro das cavernas: quebra-cabeças de luz e o **Guardião de Cristal**, uma máquina dos Antigos que é o chefe final. Atrás dele está o **Cristal de Salto**.
+- **Final:** você abastece a nave, faz a lista de verificação do lançamento ("Energia? OK! Combustível? OK!"), contagem regressiva e decolagem, com o **Ulo a bordo**: ele tinha desistido de voltar para casa, mas não quer ficar sozinho de novo, e na Terra os cientistas vão ajudá-lo a achar o caminho do planeta dele. No espaço, o salto... e a **Terra azul** aparece na janela. Créditos com "o que aconteceu com cada um" (o Bolota vai junto!).
 
 ## 1.2 O planeta: Lúmen
 
@@ -80,7 +80,7 @@ Essa ordem é a sugerida, mas o jogador pode escolher um pouco: depois da Flores
 
 ## 1.4 Os bichos (e os robôs)
 
-Regra de tom: os bichos têm formas bem claras (dá para reconhecer de longe), cores fortes e olhos que brilham, mas **nada de sangue**. Bicho derrotado **desmaia e foge** ou some em faíscas; robô vira sucata (que serve para consertar coisas). Ver a decisão D4.
+Regra de tom: os bichos têm formas bem claras (dá para reconhecer de longe), cores fortes e olhos que brilham, mas **nada de sangue**. Bicho derrotado **cai, some numa nuvenzinha e deixa cair itens** (carne, cristais, materiais); robô vira sucata (que serve para consertar coisas). Dá para **caçar** para comer. Ver as decisões D4 e D5.
 
 | Bicho | O que é | Comportamento | Perigo | Como lidar | Curiosidade (ciência) |
 |---|---|---|---|---|---|
@@ -96,11 +96,26 @@ Regra de tom: os bichos têm formas bem claras (dá para reconhecer de longe), c
 | **Hexamute** | Bichão peludo de 6 patas | Neutro; fica bravo perto do filhote | alto se irritado | Não chegue perto do filhote | Parecido com mamutes e bisões |
 | **Robôs da Kronos** | Drones vigias (atiram), robôs-aranha coletores (cortam) | Patrulham a estação | médio | Desligue as torres de energia; atordoador funciona bem | Robôs seguem o programa mesmo quando ninguém mais está lá |
 
+### O que cada bicho deixa cair
+
+| Bicho | Deixa cair |
+|---|---|
+| Saltito | carne pequena |
+| Pernalta | carne grande |
+| Rastejador | carne + espinho de cristal (vale como cristal pequeno) |
+| Zumbidor | carapaça (material para armadura) |
+| Cuspidor | sementes (para a horta) e resina |
+| Casco-de-Pedra | carne grande + placa de casco (material para armadura) |
+| Hexamute | carne grande + pelo (deixa o traje térmico mais quente) |
+| Robôs da Kronos | sucata e fios |
+
+O **Bolota** e os filhotes nunca são caçados. A carne crua estraga em 1 dia; assada ou defumada dura bem mais (ver 3.3).
+
 ## 1.5 Personagens
 
 - **Você, o piloto:** não aparece (primeira pessoa). A ÍRIS chama você de "Comandante". Sem nome nem gênero definidos (decisão D9).
 - **ÍRIS:** a inteligência da nave. Voz calma, faz piadas ruins de robô, dá dicas e avisa dos perigos. Fica mais esperta a cada sistema consertado (começa sem energia nem para enxergar).
-- **Ulo:** alienígena da espécie *vaari*, com 2,5 m de altura, quatro braços e pele cinza-azulada com manchas que **mudam de cor conforme o humor** (como o polvo faz de verdade). É jardineiro e inventor e mora numa casa-cogumelo com horta. Fala devagar. Caiu aqui há 120 anos, a nave dele não tinha conserto e ele **desistiu de voltar**. Ao longo do jogo, você devolve a esperança a ele.
+- **Ulo:** alienígena da espécie *vaari*, com 2,5 m de altura, quatro braços e pele cinza-azulada com manchas que **mudam de cor conforme o humor** (como o polvo faz de verdade). É jardineiro e inventor e mora numa casa-cogumelo com horta. Fala devagar. Caiu aqui há 120 anos; a nave dele se desfez na queda e os pedaços viraram a casa-cogumelo. Ele **desistiu de voltar**. Ao longo do jogo, você devolve a esperança a ele, e no final ele **embarca com você na Andorinha** (final fixo: o jogador não escolhe).
 - **Tavares:** explorador da Expedição Cruzeiro (o esqueleto). Os 12 registros dele contam a história aos poucos.
 - **Bolota:** o mascote. **Nunca morre**: se apanhar, volta correndo para a base.
 - **Unidade 7:** um robô coletor da Kronos que dá para reprogramar (missão). Vira o guarda da base.
@@ -125,7 +140,7 @@ Elas aparecem conforme você explora. Nenhuma é obrigatória, mas todas ajudam.
 | 12 | **Unidade 7** | Terras Quentes | Reprogramar um robô coletor | Guarda da base à noite |
 | 13 | **Diário de criaturas** | todas | Escanear todos os bichos (cada um tem uma curiosidade de ciência) | Scanner melhor: mostra o ponto fraco |
 | 14 | **A Chave dos Antigos** | Floresta, Desfiladeiro e Picos | 3 templos pequenos com quebra-cabeças de luz e espelhos | Abre as Cavernas de Cristal |
-| 15 | **A nave do Ulo** | Floresta | Consertar a antena da nave dele para mandar uma mensagem para casa | A resposta chega no final: ele decide voltar |
+| 15 | **As peças da casa do Ulo** | Floresta | A casa-cogumelo foi feita com os restos da nave dele. Ele aceita desmontar uma parte para ajudar, se você trouxer material para refazer a parede | Uma placa do escudo e fios |
 | 16 | **Receitas do Ulo** | Base | Cozinhar 5 receitas diferentes | Bônus: correr mais, ver no escuro, comida que dura mais |
 | 17 | **O filhote de Hexamute** | Picos Gelados | Levar um filhote perdido de volta para a manada | A manada abre uma trilha secreta |
 

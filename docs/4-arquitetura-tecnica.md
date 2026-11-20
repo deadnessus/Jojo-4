@@ -58,7 +58,8 @@ Esse estilo é também o que um programador sem artista consegue fazer bem: form
 
 ## 4.4 Orçamento de desempenho (iPhone e iPad)
 
-- **Meta:** 60 quadros por segundo em iPad (2020 ou mais novo) e iPhone 12 ou mais novo; **nunca abaixo de 30** em aparelhos mais antigos com iOS 16.4+. (Decisão D15: quais aparelhos as crianças usam?)
+- **Aparelhos das crianças:** iOS 18.7 (decisão D15). O iOS 18 roda em iPhone XS/XR (2018) ou mais novos e em iPad de 7ª geração ou mais novos, então o jogo sobra no requisito técnico (iOS 16.4+).
+- **Meta:** 60 quadros por segundo em aparelhos de 2020 ou mais novos; **nunca abaixo de 30** no aparelho mais antigo que roda iOS 18 (na qualidade "Leve").
 - **Chamadas de desenho (draw calls):** até **150** por quadro, idealmente menos de 100. Juntar geometrias paradas (merge por pedaço de terreno) e usar `InstancedMesh` para plantas e pedras. Há relatos de instancing lento em alguns iPhones ([bug do WebKit 218949](https://bugs.webkit.org/show_bug.cgi?id=218949)), então é preciso **medir no aparelho** e manter o plano B de geometria juntada.
 - **Resolução:** `pixelRatio = min(devicePixelRatio, 2) × escala`, com a **escala dinâmica** entre 0,6 e 1,0, ajustada pelo tempo de cada quadro. Um pixel ratio 3 no iPhone deixa tudo pesado ([fórum do Three.js](https://discourse.threejs.org/t/low-fps-on-ios-mobile-with-pixel-ration-set-as-window-devicepixelratio/4963)).
 - `antialias: false` (o visual pixelado não precisa); materiais simples (`MeshLambertMaterial` com cor por vértice ou um shader próprio pequeno); **sem sombras em tempo real**.
@@ -192,7 +193,7 @@ Só **estado do jogo**: números, sim/não e **códigos internos** (`fruta_lante
 
 ```json
 {
-  "jogo": "naufrago", "versao_save": 1, "versao_jogo": "a1b2c3d",
+  "jogo": "rumo-a-terra", "versao_save": 1, "versao_jogo": "a1b2c3d",
   "salvo_em": 1795000000, "tempo_jogado_s": 5400, "dificuldade": "sobrevivente",
   "dia": 7, "hora": 0.42, "regiao": "floresta", "pos": [12.5, 3.1, -40.2], "giro": 1.57,
   "vida": 80, "fome": 55, "escudo": 20,
@@ -210,7 +211,7 @@ Só **estado do jogo**: números, sim/não e **códigos internos** (`fruta_lante
 `src/logica/save.js` monta, **valida** e **migra** o save (o campo `versao_save` permite mudar o formato sem perder o progresso de ninguém).
 
 ### No aparelho (sempre)
-- `localStorage`, com chaves próprias: `naufrago:save:1`, `:2` e `:3` (3 espaços de save) e `naufrago:config`. Nunca `localStorage.clear()`.
+- `localStorage`, com chaves próprias: `rumo-a-terra:save:1`, `:2` e `:3` (3 espaços de save) e `rumo-a-terra:config`. Nunca `localStorage.clear()`.
 - **Salva sozinho:** ao dormir, ao trocar de região, ao consertar um sistema, a cada 2 minutos e quando a aba esconde.
 - O jogo funciona **100% sem internet**.
 
@@ -233,7 +234,7 @@ Sem login: `401`. Sem banco: `503` (`semBanco()`). Save recusado: `400` com o mo
 - `POST`: conferir `origemInvalida(request)` (só aceita JSON vindo do próprio site) e ler o corpo com `lerJson`.
 - Tabela com o **prefixo do jogo**, ligada a `contas.id`, criada com `CREATE TABLE IF NOT EXISTS` (como as outras tabelas do site). **Nunca mexer em `contas` nem `sessoes`.**
   ```sql
-  CREATE TABLE IF NOT EXISTS nf_saves (
+  CREATE TABLE IF NOT EXISTS rt_saves (
     conta_id INTEGER NOT NULL,          -- contas.id
     slot     INTEGER NOT NULL,          -- 1 a 3
     versao   INTEGER NOT NULL,          -- versao_save
@@ -265,7 +266,7 @@ Sem login: `401`. Sem banco: `503` (`semBanco()`). Save recusado: `400` com o mo
 - **Conflito:** ao tocar em "Continuar", se a nuvem tiver um save mais novo que o do aparelho, mostra os dois resumos ("Este aparelho: Dia 9, 3 sistemas" × "Nuvem: Dia 12, 4 sistemas") e a criança escolhe.
 - Sem internet ou erro: marca "pendente" e tenta de novo na próxima ocasião. Nada trava o jogo.
 
-**Antes de juntar na `main` do site** (regras do `queres-games`): `npm run build` passando, teste local com `npx wrangler@4 pages dev dist --d1 DB=teste-local`, `CLAUDE.md` do site atualizado (rota e tabela `nf_saves`), post no blog explicando o que é guardado e **confirmação do dono**, porque é guardar dados de jogadores num site infantil.
+**Antes de juntar na `main` do site** (regras do `queres-games`): `npm run build` passando, teste local com `npx wrangler@4 pages dev dist --d1 DB=teste-local`, `CLAUDE.md` do site atualizado (rota e tabela `rt_saves`), post no blog explicando o que é guardado e **confirmação do dono**, porque é guardar dados de jogadores num site infantil.
 
 **Mais tarde, se outros jogos quiserem save na nuvem:** dá para transformar isso numa rota genérica do site (`/api/saves/<jogo>`). Por enquanto, seguimos o padrão atual (rota e tabela de cada jogo).
 

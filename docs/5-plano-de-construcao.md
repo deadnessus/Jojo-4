@@ -19,7 +19,7 @@ O maior risco de um jogo de tiro em primeira pessoa no toque é o **controle ser
 - Um terreno de teste com névoa, céu com a Brasa e o Colosso, algumas plantas.
 - Câmera em primeira pessoa, **joystick + olhar + botões de toque**, teclado e mouse, colisão com o terreno, pulo.
 - HUD básico, pausa (inclusive ao esconder a aba), "Gire o aparelho", contador `?debug=1`.
-- **Proposta de visual** (paleta de cores, textura pixelada ou lisa) com capturas de tela para o dono aprovar (decisão D11).
+- **Duas propostas de visual** (pixelado e liso), que dá para trocar nas opções, com capturas de tela para o dono escolher mais para frente (decisão D11).
 - **O dono testa:** dá para andar e olhar confortavelmente no iPad e no iPhone? Está liso?
 - **Pronto quando:** pelo menos 50 fps no iPad das crianças, nenhum erro no console e controles aprovados pelo dono e pelas crianças.
 
@@ -44,7 +44,7 @@ O maior risco de um jogo de tiro em primeira pessoa no toque é o **controle ser
 
 ### Etapa 3: salvar na nuvem (1 sessão aqui + 1 sessão no repositório `queres-games`)
 - Aqui: `save-nuvem.js`, `/conta.js` no `index.html`, botão "Salvar na nuvem", login dentro do jogo com `QGConta.montar`, tela de conflito, testes (com um servidor de mentira que imita as rotas).
-- Lá (sessão do `queres-games` com permissão de escrita, skill `login-queres-games`): `functions/api/<slug>/saves.js`, `functions/_lib/<slug>.js` com `conferirSave`, tabela `nf_saves`, teste local com `wrangler`, `CLAUDE.md` do site e post no blog. **O dono confirma antes do merge** (é guardar dados de jogadores num site infantil).
+- Lá (sessão do `queres-games` com permissão de escrita, skill `login-queres-games`): `functions/api/<slug>/saves.js`, `functions/_lib/<slug>.js` com `conferirSave`, tabela `rt_saves`, teste local com `wrangler`, `CLAUDE.md` do site e post no blog. **O dono confirma antes do merge** (é guardar dados de jogadores num site infantil).
 - Pode vir antes ou depois, conforme a decisão D14.
 
 ### Etapa 4: Desfiladeiro dos Ventos (2 sessões)
@@ -63,7 +63,7 @@ O maior risco de um jogo de tiro em primeira pessoa no toque é o **controle ser
 
 ### Etapa 7: o final (2 a 3 sessões)
 - Ruínas dos Antigos e Cavernas de Cristal, quebra-cabeças de luz, o **Guardião de Cristal**.
-- A nave do Ulo e a resposta do planeta dele.
+- O Ulo embarca na Andorinha (final fixo).
 - Lista de verificação do lançamento, decolagem, a Terra na janela, créditos.
 
 ### Etapa 8: polimento (contínuo)
@@ -85,7 +85,7 @@ O maior risco de um jogo de tiro em primeira pessoa no toque é o **controle ser
 ## Situação
 
 - [x] Plano, história, pesquisa e arquitetura (este documento)
-- [ ] Decisões respondidas (documento 6)
+- [x] Decisões respondidas (documento 6)
 - [ ] Etapa 0: fundação
 - [ ] Etapa 1: Vale da Queda (primeira versão jogável)
 - [ ] Etapa 2: Floresta Lumina

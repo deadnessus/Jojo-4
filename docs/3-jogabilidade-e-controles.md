@@ -33,6 +33,8 @@ O tempo passa em **dias de Lúmen** (1 dia = 16 minutos de jogo). Cada comida te
 | Raiz-pedra | Vale, Picos | médio | 5 dias | assada: 8 dias |
 | Peixe-lanterna | Lago (pesca) | muito | 1 dia | assado: 3 dias; **defumado: 8 dias** |
 | Ovos de Pernalta | Ninhos no chão | médio | 3 dias | cozidos: 5 dias |
+| Carne pequena | Caça (Saltito) | médio | 1 dia | assada: 3 dias; **defumada: 8 dias** |
+| Carne grande | Caça (Pernalta, Rastejador, Casco-de-Pedra, Hexamute) | muito | 1 dia | assada: 3 dias; **defumada: 8 dias** |
 | Feijão | Horta da base | muito | 10 dias (seco) | cozido: 3 dias |
 | Receitas do Ulo | Fogão da base | muito + bônus | 4 a 6 dias | — |
 
@@ -74,8 +76,8 @@ Inspiração Quake 2 (armas diferentes para situações diferentes), mas com car
 | **Lança-luz** | Granada de luz que espanta bichos (muito boa contra Rastejadores e Planadores) | Fabricada (cristal pequeno) |
 | **Rifle de raio** | Tiro carregado de longe, forte contra chefes e robôs | Estação K-7 |
 
-- **Mira assistida:** no toque, a mira "gruda" de leve no inimigo mais próximo do centro. No modo Explorador há **tiro automático** quando a mira passa por um inimigo (como em vários jogos de tiro para celular). Decisão D12.
-- **Bichos derrotados** desmaiam e fogem (ou somem em faíscas); **robôs** viram sucata. Decisão D4.
+- **Mira assistida:** no toque, a mira "gruda" de leve no alvo mais próximo do centro (mais forte no modo Explorador). **Não há tiro automático**: quem atira é sempre a criança. Decisão D12.
+- **Bichos derrotados** caem, somem numa nuvenzinha e **deixam cair itens** (carne, cristais, materiais); **robôs** viram sucata. Dá para **caçar** para comer. Decisões D4 e D5.
 - **Chefes** têm um padrão para aprender e um ponto fraco brilhante. Nada de "esponja de tiros".
 
 ## 3.7 Equipamentos que abrem caminhos
@@ -105,7 +107,7 @@ Receitas simples: **no máximo 3 ingredientes** e sempre mostrando o que falta. 
 
 | Modo | Fome | Inimigos | Mira | Desmaio |
 |---|---|---|---|---|
-| **Explorador** | lenta | fracos e menos numerosos | assistida forte + tiro automático | não perde nada |
+| **Explorador** | lenta | fracos e menos numerosos | assistida forte | não perde nada |
 | **Sobrevivente** (padrão) | normal | normais | assistida leve | perde metade da comida carregada |
 | **Veterano** | rápida | fortes | sem assistência | perde toda a comida carregada |
 
