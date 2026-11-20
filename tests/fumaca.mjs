@@ -124,7 +124,7 @@ async function testar(nome, largura, altura) {
   await esperar(200);
   const btn = await page.locator('#btn-atirar').boundingBox();
   const bx = btn.x + btn.width / 2, by = btn.y + btn.height / 2;
-  conferir(bx < largura / 2, 'o botão de atirar fica na esquerda (padrão)');
+  conferir(bx > largura / 2, 'o botão de atirar fica na direita (como era)');
   a = await estado();
   await toque('touchStart', [[bx, by, 5]]);
   await esperar(900);
