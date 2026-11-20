@@ -14,7 +14,7 @@
 </script>
 </head>
 <body>
-<!-- Rumo à Terra, jogo do Jojô para o queres.games. Etapa 0: andar, olhar, pular e treinar a mira.
+<!-- Rumo à Terra, jogo do Jojô para o queres.games: consertar a Andorinha em 12 missões e voltar para a Terra.
      Plano completo em docs/README.md. Botões com id fixo: a telemetria do site conta os toques pelo id. -->
 <canvas id="tela3d" aria-label="Mundo do jogo"></canvas>
 
@@ -34,6 +34,8 @@
   <div id="dano" aria-hidden="true"></div>
   <button id="btn-pausar" type="button" aria-label="Pausar">II</button>
   <div id="vida" aria-label="Vida"><span aria-hidden="true">❤️</span><div id="vida-barra"><div id="vida-cheia"></div></div></div>
+  <button id="btn-missao" type="button" hidden><span id="missao-icone" aria-hidden="true"></span><span class="textos"><b id="missao-titulo"></b><span id="missao-texto"></span><small id="missao-progresso"></small></span></button>
+  <div id="chefe" hidden><b id="chefe-nome"></b><div id="chefe-barra"><div id="chefe-cheia"></div></div></div>
   <button id="btn-mapa" type="button" aria-label="Mapa"><span aria-hidden="true">🗺️</span></button>
   <button id="btn-mochila" type="button" aria-label="Mochila e criar"><span aria-hidden="true">🎒</span></button>
   <button id="btn-cancelar" type="button" aria-label="Parar de colocar" hidden>✕</button>
@@ -62,11 +64,11 @@
       <button id="btn-opcoes" type="button">Opções</button>
     </div>
     <div id="confirmar-novo" class="pilha" hidden>
-      <p class="aviso-novo">Começar um jogo novo? A mochila e as construções guardadas neste aparelho vão ser apagadas.</p>
+      <p class="aviso-novo">Começar um jogo novo? As missões, a mochila e as construções guardadas neste aparelho vão ser apagadas.</p>
       <button id="btn-confirmar-novo" class="grande perigo" type="button">Sim, começar de novo</button>
       <button id="btn-cancelar-novo" type="button">Voltar</button>
     </div>
-    <p class="nota">Versão de teste: a queda da nave, explorar o Vale, pegar madeira e pedra, criar e construir.</p>
+    <p class="nota">Em desenvolvimento: 12 missões para consertar a Andorinha e voltar para a Terra.</p>
   </div>
 </section>
 
@@ -91,6 +93,8 @@
       <div class="grupo"><button type="button" data-qualidade="auto">Automática</button><button type="button" data-qualidade="leve">Leve</button><button type="button" data-qualidade="bonita">Bonita</button></div></div>
     <div class="linha">Ajuda na mira
       <div class="grupo"><button type="button" data-mira="forte">Forte</button><button type="button" data-mira="media">Média</button><button type="button" data-mira="desligada">Desligada</button></div></div>
+    <div class="linha">Botão de atirar
+      <div class="grupo"><button type="button" data-atirar="esquerda">Na esquerda</button><button type="button" data-atirar="direita">Na direita</button></div></div>
     <div class="linha">Tamanho dos botões
       <div class="grupo"><button type="button" data-botoes="normal">Normal</button><button type="button" data-botoes="grande">Grande</button></div></div>
     <label class="linha caixa"><input id="opt-tremor" type="checkbox"> Reduzir o balanço da câmera</label>
@@ -106,11 +110,13 @@
       <div class="abas" role="tablist">
         <button id="aba-mochila" type="button" role="tab" aria-selected="true">🎒 Mochila</button>
         <button id="aba-criar" type="button" role="tab" aria-selected="false">🔨 Criar</button>
+        <button id="aba-missoes" type="button" role="tab" aria-selected="false">📜 Missões</button>
       </div>
       <button id="btn-fechar-mochila" type="button" aria-label="Voltar ao jogo">✕</button>
     </div>
     <div id="painel-mochila" class="grade-itens"></div>
     <div id="painel-criar" class="lista-receitas" hidden></div>
+    <div id="painel-missoes" class="lista-missoes" hidden></div>
   </div>
 </section>
 
@@ -124,7 +130,41 @@
       <canvas id="mapa-canvas" width="512" height="512" aria-label="Mapa do Vale visto de cima"></canvas>
       <span class="norte" aria-hidden="true">N 🪐</span>
     </div>
-    <p class="nota legenda-mapa">A seta azul é você. O triângulo branco é a Andorinha. Pontos laranja são fogueiras. O Colosso fica sempre ao norte (para cima). O mundo dá a volta: saindo por uma borda do mapa, você entra pela outra.</p>
+    <p class="nota legenda-mapa">A seta azul é você. O triângulo branco é a Andorinha. A ⭐ é o objetivo da missão e os losangos são lugares que você já conhece. Pontos laranja são fogueiras. O Colosso fica sempre ao norte (para cima). O mundo dá a volta: saindo por uma borda do mapa, você entra pela outra.</p>
+  </div>
+</section>
+
+<section id="tela-painel" class="tela" hidden>
+  <div class="cartao painel">
+    <div class="topo-mapa">
+      <h2>Painel da Andorinha</h2>
+      <button id="btn-fechar-painel" type="button" aria-label="Voltar ao jogo">✕</button>
+    </div>
+    <div id="painel-conteudo">
+      <div id="painel-missao" class="caixa-missao"></div>
+      <p id="painel-falta" class="nota" hidden></p>
+      <button id="btn-instalar" class="grande" type="button" hidden>🔧 Instalar</button>
+      <button id="btn-calibrar" class="grande" type="button" hidden>🔭 Calibrar o rastreador</button>
+      <button id="btn-decolar" class="grande" type="button" hidden>🚀 Decolar!</button>
+      <div id="painel-tanque" hidden><span>⚗️ Tanque</span><div class="barra-tanque"><div id="tanque-cheio"></div></div><b id="tanque-texto"></b></div>
+      <div id="painel-sistemas" class="sistemas"></div>
+    </div>
+    <div id="minijogo" hidden>
+      <p id="minijogo-texto"></p>
+      <div id="ceu-minijogo"><svg id="linhas-minijogo" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"></svg></div>
+      <button id="btn-sair-minijogo" type="button">Voltar</button>
+    </div>
+  </div>
+</section>
+
+<section id="tela-final" class="tela fundo-escuro" hidden>
+  <div class="cartao">
+    <h1 class="titulo">VOCÊ VOLTOU!</h1>
+    <p class="subtitulo">A Andorinha chegou na Terra. Missão cumprida, Comandante!</p>
+    <p id="final-tempo" class="nota"></p>
+    <p class="nota">Rumo à Terra — um jogo do Jojô · queres.games</p>
+    <button id="btn-final-explorar" class="grande" type="button">Continuar explorando Lúmen</button>
+    <button id="btn-final-inicio" type="button">Voltar ao início</button>
   </div>
 </section>
 
@@ -141,6 +181,10 @@
   <div id="prologo-flash"></div>
   <div id="prologo-fala" hidden><span id="prologo-quem" class="quem" hidden></span><span id="prologo-texto"></span></div>
   <button id="btn-pular-prologo" type="button">Pular ▶▶</button>
+</div>
+<div id="final" hidden>
+  <div id="final-fala" hidden><span id="final-quem" class="quem" hidden></span><span id="final-texto"></span></div>
+  <button id="btn-pular-final" type="button">Pular ▶▶</button>
 </div>
 <div id="cortina" aria-hidden="true"></div>
 

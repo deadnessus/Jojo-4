@@ -1,6 +1,7 @@
 // Teste de fumaça: abre o jogo num navegador de verdade (Chromium do Playwright), deitado como iPhone e como iPad,
 // com toque, e confere o básico: carrega sem erro, o joystick anda, arrastar olha, o botão de atirar atira
 // (e mira ao arrastar), pular pula, pausar pausa, e o celular em pé pede para girar.
+// Também: coleta e criação, aliens, mapa, dar a volta no mundo e as missões (do começo até a decolagem e o final).
 //
 // Uso:  node tests/fumaca.mjs [pasta-para-as-capturas]
 // Não substitui o teste no iPad/iPhone de verdade (o Safari usa outro motor).
@@ -123,6 +124,7 @@ async function testar(nome, largura, altura) {
   await esperar(200);
   const btn = await page.locator('#btn-atirar').boundingBox();
   const bx = btn.x + btn.width / 2, by = btn.y + btn.height / 2;
+  conferir(bx < largura / 2, 'o botão de atirar fica na esquerda (padrão)');
   a = await estado();
   await toque('touchStart', [[bx, by, 5]]);
   await esperar(900);
@@ -149,7 +151,8 @@ async function testar(nome, largura, altura) {
   // Ação perto da porta da nave
   await page.evaluate(() => { const r = window.__rumo, p = r.nave.porta; r.jogador.pos.set(p.x, r.jogador.pos.y, p.z); });
   await esperar(400);
-  conferir(await page.locator('#btn-acao').isVisible(), 'perto da porta aparece o botão "Examinar"');
+  conferir(await page.locator('#btn-acao').isVisible() && (await page.locator('#btn-acao-texto').textContent()) === 'Falar com a ÍRIS', 'perto da porta aparece o botão "Falar com a ÍRIS"');
+  conferir(await page.locator('#btn-missao').isVisible() && (await page.locator('#missao-titulo').textContent()).includes('Missão 1'), 'a caixa da missão aparece no canto (Missão 1)');
 
   // Pausar e continuar
   const pausa = await page.locator('#btn-pausar').boundingBox();
@@ -177,7 +180,7 @@ async function testar(nome, largura, altura) {
     await page.screenshot({ path: join(pastaCapturas, `${nome}-${v}.png`) });
   }
 
-  if (nome === 'iphone') await testarColeta(page, toque, conferir, nome);
+  if (nome === 'iphone') { await testarColeta(page, toque, conferir, nome); await testarMissoes(page, toque, conferir, nome); }
   if (nome === 'ipad') await testarAliensMapaVolta(page, toque, conferir, nome);
 
   conferir(erros.length === 0, `sem erros no console${erros.length ? ': ' + erros.slice(0, 3).join(' | ') : ''}`);
@@ -286,6 +289,136 @@ async function testarColeta(page, toque, conferir, nome) {
   await page.waitForFunction(() => window.__rumo.estado === 'jogando', null, { timeout: 8000 });
 }
 
+// Missões: falar com a ÍRIS, ir até a colina, derrotar os Rastejadores, pegar e instalar a bateria; os chefes;
+// a porta das Ruínas; decolar, o final e voltar a explorar; e o progresso guardado no aparelho.
+async function testarMissoes(page, toque, conferir, nome) {
+  console.log('-- missões');
+  const centro = async (sel) => { const l = page.locator(sel); await l.scrollIntoViewIfNeeded(); const b = await l.boundingBox(); return [b.x + b.width / 2, b.y + b.height / 2]; };
+  const tocar = async (sel) => { const [x, y] = await centro(sel); await page.touchscreen.tap(x, y); await esperar(300); };
+  const passo = () => page.evaluate(() => { const m = window.__rumo.missoes; return { m: m.indice, p: m.estado.p, tipo: m.passo() && m.passo().tipo, n: m.estado.n }; });
+  const irPara = (x, z) => page.evaluate(([x, z]) => { const r = window.__rumo; r.jogador.reposicionar(x, z, 0); }, [x, z]);
+  // bichos comuns não atrapalham o teste
+  await page.evaluate(() => { for (const c of window.__rumo.criaturas.lista) c.d = { ...c.d, visao: 0 }; });
+
+  // 1. falar com a ÍRIS na porta da nave
+  await page.evaluate(() => { const r = window.__rumo, p = r.nave.porta; r.jogador.reposicionar(p.x, p.z, 0); });
+  await esperar(400);
+  await tocar('#btn-acao');
+  conferir((await passo()).tipo === 'ir', 'tocar em "Falar com a ÍRIS" começa a missão (ir até a colina)');
+  const estrela = await page.evaluate(() => { const a = window.__rumo.alvoMissao(); return a && Math.round(a.x) === 104 && Math.round(a.z) === 46; });
+  conferir(estrela, 'a ⭐ da bússola aponta para a Colina da Bateria');
+
+  // 2. chegar na colina: aparecem 4 Rastejadores do ninho
+  await irPara(104, 62);
+  await esperar(500);
+  const tag = await page.evaluate(() => window.__rumo.missoes.tag());
+  const bichos = await page.evaluate((t) => window.__rumo.criaturas.lista.filter((c) => c.tag === t).length, tag);
+  conferir((await passo()).tipo === 'derrotar' && bichos === 4, `chegando na colina, saem ${bichos} Rastejadores do ninho`);
+  await page.screenshot({ path: join(pastaCapturas, `${nome}-missao-colina.png`) });
+  await page.evaluate((t) => { const r = window.__rumo; for (const c of r.criaturas.lista.filter((x) => x.tag === t)) r.criaturas.acertar(c, 99); }, tag);
+  await esperar(1600);
+  conferir((await passo()).tipo === 'pegar', 'derrotando os 4, a bateria aparece');
+
+  // 3. pegar a bateria (chegando perto, o botão vira "Pegar")
+  const pc = await page.evaluate(() => { const p = window.__rumo.pecas.lista[0]; return p && { x: p.x, z: p.z, item: p.item }; });
+  await irPara(pc.x + 0.8, pc.z);
+  await esperar(400);
+  const textoPegar = await page.locator('#btn-acao-texto').textContent();
+  await tocar('#btn-acao');
+  const temBateria = await page.evaluate(() => window.__rumo.inventario.quantos('bateria'));
+  conferir(textoPegar.startsWith('Pegar') && temBateria === 1 && (await passo()).tipo === 'instalar', `"${textoPegar}" põe a bateria na mochila`);
+
+  // 4. instalar no Painel da nave
+  await page.evaluate(() => { const r = window.__rumo, p = r.nave.porta; r.jogador.reposicionar(p.x, p.z, 0); });
+  await esperar(400);
+  conferir((await page.locator('#btn-acao-texto').textContent()) === 'Painel da nave', 'na porta, o botão vira "Painel da nave"');
+  await tocar('#btn-acao');
+  conferir(await page.locator('#tela-painel').isVisible() && await page.locator('#btn-instalar').isEnabled(), 'o Painel abre com o botão de instalar');
+  await page.screenshot({ path: join(pastaCapturas, `${nome}-painel.png`) });
+  await tocar('#btn-instalar');
+  const r1 = await page.evaluate(() => ({ energia: window.__rumo.missoes.estado.sistemas.energia, missao: window.__rumo.missoes.missao().id, estado: window.__rumo.estado }));
+  conferir(r1.energia === 1 && r1.missao === 'casco' && r1.estado === 'jogando', 'instalar a bateria: Energia consertada e começa a Missão 2');
+
+  // 5. aba Missões e receita nova
+  await tocar('#btn-missao');
+  const textoMissoes = await page.locator('#painel-missoes').textContent();
+  await tocar('#aba-criar');
+  const temRemendo = await page.locator('[data-receita="remendo"]').count();
+  const semEletro = await page.locator('[data-receita="eletrolisador"]').count();
+  conferir(textoMissoes.includes('Remendar o casco') && textoMissoes.includes('???') && temRemendo === 1 && semEletro === 0, 'a aba 📜 Missões mostra a campanha e as receitas novas aparecem na hora certa');
+  await tocar('#btn-fechar-mochila');
+
+  // 6. chefes: a Rainha (barra de vida) e o Guardião (joga cristais)
+  const tagChefe = await page.evaluate(() => {
+    const r = window.__rumo, j = r.jogador;
+    j.reposicionar(-60, -150, 0);
+    r.criaturas.invocar('rainha', -60, -165, 'teste');
+    return 'teste';
+  });
+  await esperar(800);
+  conferir(await page.locator('#chefe').isVisible() && (await page.locator('#chefe-nome').textContent()) === 'Rainha Zumbidora', 'perto de um chefe aparece a barra de vida dele');
+  await page.screenshot({ path: join(pastaCapturas, `${nome}-chefe.png`) });
+  await page.evaluate((t) => { const r = window.__rumo; for (const c of r.criaturas.lista.filter((x) => x.tag === t || x.tag === 'ajudante')) r.criaturas.acertar(c, 99); }, tagChefe);
+  await esperar(1600);
+  const vidaAntes = await page.evaluate(() => { const r = window.__rumo; r.jogador.reposicionar(-130, 200, 0); r.criaturas.invocar('guardiao', -130, 190, 'teste2'); return r.vida; });
+  await esperar(5000);
+  const vidaDepois = await page.evaluate(() => window.__rumo.vida);
+  conferir(vidaDepois < vidaAntes, `o Guardião de Cristal joga cristais que tiram vida (${Math.round(vidaAntes)} → ${Math.round(vidaDepois)})`);
+  await page.evaluate(() => { const r = window.__rumo; for (const c of r.criaturas.lista.filter((x) => x.tag === 'teste2')) r.criaturas.acertar(c, 99); r.levarDano(-100); });
+  await esperar(1500);
+
+  // 7. a porta das Ruínas abre com as 3 pedras-chave e o Guardião aparece lá dentro
+  await page.evaluate(() => {
+    const r = window.__rumo, e = r.missoes.estado;
+    e.m = 10; e.p = 2; e.n = 0;
+    r.prepararPasso();
+    r.inventario.adicionar('chave', 3);
+    const f = r.locais.portaFrente;
+    r.jogador.reposicionar(f.x, f.z - 1, 0);
+  });
+  await esperar(500);
+  const textoPorta = await page.locator('#btn-acao-texto').textContent();
+  await tocar('#btn-acao');
+  await esperar(300);
+  const r2 = await page.evaluate(() => ({ porta: window.__rumo.missoes.estado.porta, tipo: window.__rumo.missoes.passo().tipo, chefe: window.__rumo.criaturas.lista.some((c) => c.tipo === 'guardiao' && c.tag) }));
+  conferir(textoPorta === 'Abrir a porta 🗝️' && r2.porta && r2.tipo === 'chefe' && r2.chefe, 'as 3 pedras-chave abrem a porta das Ruínas e o Guardião acorda');
+  await page.evaluate(() => { const r = window.__rumo; r.jogador.reposicionar(-130, 228, 0); });
+  await esperar(500);
+  await page.screenshot({ path: join(pastaCapturas, `${nome}-ruinas.png`) });
+
+  // 8. o progresso das missões fica guardado
+  await page.evaluate(() => window.__rumo.salvarAgora());
+  const salvo = await page.evaluate(() => JSON.parse(localStorage.getItem('rumo-a-terra:save:1') || '{}'));
+  conferir(salvo.versao_save === 3 && salvo.missao && salvo.missao.m === 10 && salvo.missao.porta === true, 'o progresso das missões fica guardado no aparelho (versão 3)');
+
+  // 9. decolar, o final e voltar a explorar
+  await page.evaluate(() => {
+    const r = window.__rumo, e = r.missoes.estado;
+    r.criaturas.limparMissao();
+    e.m = 11; e.p = 0; e.n = 0;
+    for (const s of Object.keys(e.sistemas)) e.sistemas[s] = 2;
+    r.nave.mostrarSistemas(e.sistemas);
+    const p = r.nave.porta; r.jogador.reposicionar(p.x, p.z, 0);
+  });
+  await esperar(400);
+  await tocar('#btn-acao');
+  conferir(await page.locator('#btn-decolar').isVisible(), 'com tudo consertado, o Painel mostra "Decolar!"');
+  await tocar('#btn-decolar');
+  conferir(await page.evaluate(() => window.__rumo.estado) === 'decolando', 'tocar em "Decolar!" faz a nave subir');
+  await esperar(3500);
+  await page.screenshot({ path: join(pastaCapturas, `${nome}-decolagem.png`) });
+  await page.waitForFunction(() => window.__rumo.estado === 'final', null, { timeout: 9000 });
+  await esperar(5000);
+  await page.screenshot({ path: join(pastaCapturas, `${nome}-final.png`) });
+  await tocar('#btn-pular-final');
+  await page.waitForFunction(() => window.__rumo.estado === 'creditos', null, { timeout: 5000 });
+  conferir(await page.locator('#tela-final').isVisible(), 'depois da chegada na Terra aparecem os créditos');
+  await page.screenshot({ path: join(pastaCapturas, `${nome}-creditos.png`) });
+  await tocar('#btn-final-explorar');
+  const r3 = await page.evaluate(() => ({ estado: window.__rumo.estado, fim: window.__rumo.missoes.fim }));
+  conferir(r3.estado === 'jogando' && r3.fim, '"Continuar explorando" volta para Lúmen com as missões completas');
+}
+
 // Aliens (atirar até cair, levar mordida, desmaiar), mapa e dar a volta no mundo.
 async function testarAliensMapaVolta(page, toque, conferir, nome) {
   console.log('-- aliens, mapa e a volta no mundo');
@@ -384,7 +517,7 @@ async function testarComputador() {
   conferir(Math.hypot(b.x - a.x, b.z - a.z) > 2, 'W anda para a frente');
   await page.evaluate(() => { const r = window.__rumo, p = r.nave.porta; r.jogador.pos.set(p.x, r.jogador.pos.y, p.z); });
   await esperar(300);
-  conferir((await page.locator('#btn-acao-texto').textContent()).startsWith('E:'), 'perto da porta aparece "E: Examinar"');
+  conferir((await page.locator('#btn-acao-texto').textContent()) === 'E: Falar com a ÍRIS', 'perto da porta aparece "E: Falar com a ÍRIS"');
   await page.keyboard.press('Escape');
   await esperar(200);
   conferir(await page.evaluate(() => window.__rumo.estado) === 'pausa', 'Esc pausa');

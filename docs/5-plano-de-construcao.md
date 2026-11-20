@@ -78,6 +78,31 @@ O maior risco de um jogo de tiro em primeira pessoa no toque é o **controle ser
 - **Endereços de teste:** `?debug=1` mostra quadros por segundo, chamadas de desenho e triângulos; `?visual=liso` ou `?visual=pixelado`; `?hora=0.75` muda a hora do céu (0,25 nasce, 0,5 meio-dia, 0,75 pôr do sol).
 - **Verificador do queres.games:** `node .claude/skills/preparar-jogo-para-queres-games/verificar-jogo.mjs .`
 
+## Missões para reconstruir a nave (pedido do dono, 20/11/2026)
+
+Decisões D24 e D25. A campanha inteira acontece no Vale que dá a volta (512 m), com os lugares longe uns dos outros para dar caminhada. Os textos das missões são da ÍRIS e aparecem na caixa do canto (toque nela para ver a aba 📜 Missões da mochila); a ⭐ da bússola e do mapa mostra para onde ir.
+
+| # | Missão | O que tem que fazer | Conserta |
+|---|---|---|---|
+| 1 | 🔋 Luz na nave | Falar com a ÍRIS → ir até a Colina da Bateria → derrotar 4 Rastejadores do ninho → pegar a bateria → instalar no Painel | Energia (1/2) |
+| 2 | 🪚 Remendar o casco | Juntar 24 madeiras, 18 pedras e 8 fibras → criar 4 placas de remendo → instalar → fazer uma fogueira perto da nave | Casco (1/2) |
+| 3 | 🚀 O bocal do motor | Ir ao Ninho dos Zumbidores → derrotar 5 Zumbidores → **chefe: Rainha Zumbidora** (chama ajudantes) → pegar o bocal → instalar (com 12 pedras) | Motor |
+| 4 | 📡 Chamando a Terra | Ir à Base da Expedição Cruzeiro → achar 3 fusíveis (com Rastejadores de guarda) → pegar a antena → juntar 8 cristais → instalar → falar com a Terra | Comunicação |
+| 5 | 🛡️ Pronto para a luta | Juntar 6 carapaças de Zumbidor → criar a armadura (o dano cai para 60%) | — |
+| 6 | ⚛️ Energia de verdade | Ir à Cratera do Núcleo → **chefe: Grande Garra** (dá investidas, não tem medo de fogo) → pegar o núcleo → juntar 12 cristais → instalar | Energia (2/2) |
+| 7 | 🟧 As placas do escudo | Achar 6 placas espalhadas pelo Vale → instalar (com 10 pedras) | Casco (2/2) |
+| 8 | 🫧 Ar para a viagem | Colher 10 tufos de musgo-de-ar perto dos lagos → criar o biofiltro → instalar | Suporte de vida |
+| 9 | ⚗️ Combustível | Desmontar destroços e juntar 12 sucatas → criar o eletrolisador → instalar → esperar o tanque encher (6 min) | Combustível |
+| 10 | 🔭 Navegar pelas estrelas | Subir o morro grande até o Observatório → pegar o rastreador → instalar → minijogo: tocar nas 5 estrelas do Cruzeiro do Sul na ordem | Navegação |
+| 11 | 💠 O cristal de salto | Achar as 3 pedras-chave nos monólitos (com guardas) → ir às Ruínas dos Antigos → abrir a porta → **chefe: Guardião de Cristal** (joga cristais) → pegar o Cristal de Salto → instalar | Motor de salto |
+| 12 | 🌍 Rumo à Terra | Decolar pelo Painel: a nave sobe no Vale, faz o salto e chega na Terra; créditos com "Continuar explorando" | — |
+
+- **Código:** `src/dados/missoes.js` (a campanha), `src/dados/locais.js` (lugares, pontos das peças, sucata), `src/logica/missoes.js` (o motor, testado no Node em `tests/logica/missoes.test.mjs`), `src/mundo/locais.js` (as construções de cada lugar, a porta das Ruínas e os montes de sucata), `src/entidades/pecas.js` (peças com facho de luz e "Pegar"), `src/entidades/criaturas.js` (chefes e bichos chamados pelas missões, que não renascem; chefe se recupera se você fugir para longe), `src/ui/painel.js` (Painel da nave e o minijogo), `src/mundo/nave.js` (a nave muda a cada conserto), `src/cenas/final.js` (chegada na Terra).
+- **Relevo novo:** chão chato para a Base, as Ruínas, o Ninho e o Observatório, e a operação `cratera` (fundo chato e borda levantada).
+- **Save versão 3:** guarda a missão, o passo, a contagem, as peças já pegas, os sistemas consertados, o tanque e se a porta das Ruínas está aberta (só números e códigos). Saves antigos começam a campanha do começo, com a mochila e as construções.
+- **Teste de fumaça (iPhone):** falar com a ÍRIS, chegar na colina, derrotar os 4 Rastejadores, pegar e instalar a bateria, aba Missões e receitas novas, barra de vida do chefe, cristais do Guardião, abrir a porta das Ruínas, save versão 3, decolar, final, créditos e voltar a explorar. Também confere o botão de atirar na esquerda.
+- **Ainda não tem:** comida que estraga, dia e noite, as outras regiões, o esqueleto e o alien que desistiu de voltar (subtramas do plano). Ficam para as próximas etapas.
+
 ## Mundo que dá a volta, aliens e mapa (pedido do dono, 20/11/2026)
 
 Decisões D21, D22 e D23:
@@ -139,7 +164,7 @@ A prévia privada do claude.ai **não abre no iPadOS 18.7** (o visualizador do a
 - [x] Plano, história, pesquisa e arquitetura (este documento)
 - [x] Decisões respondidas (documento 6)
 - [ ] Etapa 0: fundação — **programada, testada no computador e publicada em `queres.games/jogar/rumo-a-terra/` como "em desenvolvimento" (20/11/2026, commit `c4b28d5`, PR #67 do queres-games)**; falta o dono testar no iPad e no iPhone e escolher o visual (D11)
-- [ ] Etapa 1: Vale da Queda (primeira versão jogável)
+- [ ] Etapa 1: Vale da Queda (primeira versão jogável) — **adiantada a pedido do dono:** coletar/criar/construir, abertura, mundo que dá a volta, aliens, mapa e a **campanha de 12 missões até a decolagem** (20/11/2026). Faltam dia e noite e a comida que estraga
 - [ ] Etapa 2: Floresta Lumina
 - [ ] Etapa 3: salvar na nuvem
 - [ ] Etapa 4: Desfiladeiro dos Ventos
