@@ -39,6 +39,8 @@ Para escapar da gravidade da Terra, um foguete precisa chegar a **11 km por segu
 
 | Material | Onde achar | Para que serve |
 |---|---|---|
+| **Madeira** | Árvores-taça (cortar) | Ferramentas, fogueira, blocos, remendos simples |
+| **Pedra** | Pedras (as grandes precisam de picareta) | Ferramentas, fogueira, blocos |
 | **Sucata** | Destroços da Andorinha, robôs derrotados, base Cruzeiro | Remendos, armas, melhorias da base |
 | **Fios e componentes** | Nave, base Cruzeiro, estação K-7 | Consertos elétricos, scanner, armadilhas |
 | **Fibra** | Plantas da Floresta | Corda, gancho, vara de pesca, roupas |

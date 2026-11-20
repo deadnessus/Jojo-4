@@ -29,7 +29,11 @@
   <div id="contador-alvos" hidden></div>
   <div id="mensagem" role="status" hidden><span class="quem">ÍRIS</span><span id="mensagem-texto"></span></div>
   <pre id="debug" hidden></pre>
+  <div id="avisos" aria-live="polite"></div>
+  <div id="modo-colocar" hidden></div>
   <button id="btn-pausar" type="button" aria-label="Pausar">II</button>
+  <button id="btn-mochila" type="button" aria-label="Mochila e criar"><span aria-hidden="true">🎒</span></button>
+  <button id="btn-cancelar" type="button" aria-label="Parar de colocar" hidden>✕</button>
   <div id="controles-toque">
     <button id="btn-acao" type="button" hidden><span class="icone" aria-hidden="true">✋</span><span id="btn-acao-texto">Examinar</span></button>
     <button id="btn-pular" type="button" aria-label="Pular"><span aria-hidden="true">⤒</span></button>
@@ -50,7 +54,7 @@
     <p class="subtitulo">Sua nave caiu num planeta desconhecido. Conserte a Andorinha e volte para casa.</p>
     <button id="btn-jogar" class="grande" type="button">Jogar</button>
     <button id="btn-opcoes" type="button">Opções</button>
-    <p class="nota">Versão de teste (Etapa 0): andar, olhar, pular e treinar a mira.</p>
+    <p class="nota">Versão de teste: andar, olhar, treinar a mira, pegar madeira e pedra, criar e construir.</p>
   </div>
 </section>
 
@@ -81,6 +85,20 @@
     <label class="linha">Volume <b id="opt-volume-valor"></b>
       <input id="opt-volume" type="range" min="0" max="10" step="1"></label>
     <button id="btn-voltar-opcoes" class="grande" type="button">Voltar</button>
+  </div>
+</section>
+
+<section id="tela-mochila" class="tela" hidden>
+  <div class="cartao mochila">
+    <div class="topo-mochila">
+      <div class="abas" role="tablist">
+        <button id="aba-mochila" type="button" role="tab" aria-selected="true">🎒 Mochila</button>
+        <button id="aba-criar" type="button" role="tab" aria-selected="false">🔨 Criar</button>
+      </div>
+      <button id="btn-fechar-mochila" type="button" aria-label="Voltar ao jogo">✕</button>
+    </div>
+    <div id="painel-mochila" class="grade-itens"></div>
+    <div id="painel-criar" class="lista-receitas" hidden></div>
   </div>
 </section>
 

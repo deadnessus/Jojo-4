@@ -78,6 +78,17 @@ O maior risco de um jogo de tiro em primeira pessoa no toque é o **controle ser
 - **Endereços de teste:** `?debug=1` mostra quadros por segundo, chamadas de desenho e triângulos; `?visual=liso` ou `?visual=pixelado`; `?hora=0.75` muda a hora do céu (0,25 nasce, 0,5 meio-dia, 0,75 pôr do sol).
 - **Verificador do queres.games:** `node .claude/skills/preparar-jogo-para-queres-games/verificar-jogo.mjs .`
 
+## Coletar, criar e construir (pedido do dono, 20/11/2026)
+
+Feito logo depois da Etapa 0 (decisão D19, detalhes em 3.8):
+- `src/mundo/recursos.js`: árvores, arbustos, pedras e cristais que tremem, quebram, soltam lascas e crescem de novo (mexendo só nos vértices de cada um dentro das malhas juntadas).
+- `src/entidades/coletaveis.js`: itens que pulam e voam até o jogador.
+- `src/mundo/construcoes.js`: blocos de madeira, pedra e cristal numa grade de 1 m (malhas instanciadas, dá para empilhar e subir), fogueira com fogo e luz, prévia verde/vermelha, desmontar.
+- `src/ui/mochila.js` + `src/logica/inventario.js` + `src/dados/itens.js`: mochila, receitas e o que cada coisa dá.
+- Ferramentas na mão (luva, machado, picareta) com golpe, em `src/entidades/arma.js`.
+- Save no aparelho (`src/logica/save.js`, `src/nucleo/save-local.js`): mochila e construções.
+- Testes: `tests/logica/inventario.test.mjs` e um cenário novo no teste de fumaça (cortar, criar pela tela, colocar, subir, recarregar).
+
 ## O que a Etapa 0 entregou
 
 - Three.js r170 em `vendor/three/`; import map com caminho relativo.

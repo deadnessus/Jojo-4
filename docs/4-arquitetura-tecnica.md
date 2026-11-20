@@ -211,6 +211,7 @@ Só **estado do jogo**: números, sim/não e **códigos internos** (`fruta_lante
 `src/logica/save.js` monta, **valida** e **migra** o save (o campo `versao_save` permite mudar o formato sem perder o progresso de ninguém).
 
 ### No aparelho (sempre)
+- **Já funciona (versão 1 do save):** a mochila e as construções (`inventario`, `blocos` como `[tipo, i, j, base em cm]` e `fogueiras` como `[x, z em cm]`), em `rumo-a-terra:save:1`, validado por `src/logica/save.js`. Salva a cada 10 s se algo mudou, ao pausar, ao sair e ao esconder a aba. O resto do save acima entra na Etapa 1.
 - `localStorage`, com chaves próprias: `rumo-a-terra:save:1`, `:2` e `:3` (3 espaços de save) e `rumo-a-terra:config`. Nunca `localStorage.clear()`.
 - **Salva sozinho:** ao dormir, ao trocar de região, ao consertar um sistema, a cada 2 minutos e quando a aba esconde.
 - O jogo funciona **100% sem internet**.

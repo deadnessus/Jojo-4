@@ -24,6 +24,7 @@ As respostas do dono (20/11/2026) estão registradas abaixo. Onde não houve res
 | D16 | Desenhos | ⭐ Se o Jojô quiser desenhar bichos ou peças, os desenhos podem virar modelo ou textura (sem resposta: fica como opção) |
 | D17 | Duração do dia | ⭐ 16 minutos (sem resposta: vale a recomendação) |
 | D18 | Medição de acontecimentos | **Pendente** (explicação abaixo) |
+| D19 | Coletar e criar (pedido do dono, 20/11/2026) | **Sim:** quebrar árvores, arbustos, pedras e cristais segurando a ação; mochila com aba de criar; ferramentas, fogueira e blocos para construir e empilhar; tudo salvo no aparelho. Detalhes em 3.8 |
 
 ## D18 explicada (pendente)
 

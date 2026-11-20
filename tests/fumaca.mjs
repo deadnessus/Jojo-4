@@ -169,8 +169,89 @@ async function testar(nome, largura, altura) {
     await page.screenshot({ path: join(pastaCapturas, `${nome}-${v}.png`) });
   }
 
+  if (nome === 'iphone') await testarColeta(page, toque, conferir, nome);
+
   conferir(erros.length === 0, `sem erros no console${erros.length ? ': ' + erros.slice(0, 3).join(' | ') : ''}`);
   await ctx.close();
+}
+
+// Coleta e criação: cortar árvore segurando a ação, criar pela mochila, colocar blocos, subir neles, salvar.
+async function testarColeta(page, toque, conferir, nome) {
+  console.log('-- coleta e criação');
+  const centro = async (sel) => { const l = page.locator(sel); await l.scrollIntoViewIfNeeded(); const b = await l.boundingBox(); return [b.x + b.width / 2, b.y + b.height / 2]; };
+  const tocar = async (sel) => { const [x, y] = await centro(sel); await page.touchscreen.tap(x, y); await esperar(250); };
+  // vai até a árvore mais perto e mira no tronco
+  await page.evaluate(() => {
+    const r = window.__rumo, j = r.jogador;
+    const arvores = r.recursos.lista.filter((x) => x.tipo === 'arvore' && x.estado === 'inteiro');
+    arvores.sort((a, b) => Math.hypot(a.x - j.pos.x, a.z - j.pos.z) - Math.hypot(b.x - j.pos.x, b.z - j.pos.z));
+    const a = arvores[0];
+    window.__arvore = a;
+    j.pos.set(a.x + 1.6, a.y + 0.2, a.z);
+  });
+  await esperar(400);
+  await page.evaluate(() => {
+    const r = window.__rumo, j = r.jogador, a = window.__arvore;
+    const dx = a.x - j.pos.x, dz = a.z - j.pos.z, dy = a.y + 1.0 - (j.pos.y + 1.62);
+    j.girar(Math.atan2(dx, -dz) - j.rumo, Math.atan2(dy, Math.hypot(dx, dz)) - j.inclinacao);
+  });
+  await esperar(300);
+  conferir((await page.locator('#btn-acao-texto').textContent()) === 'Cortar', 'mirando no tronco aparece "Cortar"');
+  const [ax, ay] = await centro('#btn-acao');
+  await toque('touchStart', [[ax, ay, 9]]);
+  await esperar(3800);
+  await toque('touchEnd', []);
+  await esperar(1500);
+  const madeira = await page.evaluate(() => window.__rumo.inventario.quantos('madeira'));
+  conferir(madeira >= 3 && await page.evaluate(() => window.__arvore.estado !== 'inteiro'), `segurar a ação corta a árvore e a madeira vem para a mochila (${madeira})`);
+  await page.screenshot({ path: join(pastaCapturas, `${nome}-coleta.png`) });
+
+  // criar machado pela tela da mochila
+  await page.evaluate(() => { const i = window.__rumo.inventario; i.adicionar('pedra', 5); i.adicionar('fibra', 2); i.adicionar('madeira', 4); });
+  await tocar('#btn-mochila');
+  conferir(await page.locator('#tela-mochila').isVisible(), 'a mochila abre (e o jogo pausa)');
+  await page.screenshot({ path: join(pastaCapturas, `${nome}-mochila.png`) });
+  await tocar('#aba-criar');
+  await tocar('button[data-receita="machado"]');
+  await tocar('button[data-receita="bloco_madeira"]');
+  await tocar('button[data-receita="bloco_madeira"]');
+  await page.screenshot({ path: join(pastaCapturas, `${nome}-criar.png`) });
+  const tem = await page.evaluate(() => ({ machado: window.__rumo.inventario.quantos('machado'), blocos: window.__rumo.inventario.quantos('bloco_madeira') }));
+  conferir(tem.machado === 1 && tem.blocos === 4, `criar machado e blocos pela tela (machado ${tem.machado}, blocos ${tem.blocos})`);
+
+  // colocar blocos: aba Mochila -> Colocar -> mirar no chão -> Colocar
+  await tocar('#aba-mochila');
+  await tocar('button[data-item="bloco_madeira"]');
+  conferir(await page.locator('#modo-colocar').isVisible(), 'tocar em "Colocar" volta ao jogo no modo de colocar');
+  await page.evaluate(() => { const j = window.__rumo.jogador; j.girar(0, -0.75 - j.inclinacao); });
+  await esperar(300);
+  const antes = await page.evaluate(() => window.__rumo.construcoes.total);
+  await tocar('#btn-acao');
+  await esperar(200);
+  await tocar('#btn-acao');
+  const depois = await page.evaluate(() => window.__rumo.construcoes.total);
+  conferir(depois >= antes + 2, `blocos colocados (${depois - antes}), o segundo em cima do primeiro`);
+  await page.evaluate(() => { const j = window.__rumo.jogador; j.girar(0, 0.35 - j.inclinacao); });
+  await esperar(400);
+  await page.screenshot({ path: join(pastaCapturas, `${nome}-blocos.png`) });
+  // subir nos blocos: põe o jogador em cima e deixa cair
+  const subiu = await page.evaluate(async () => {
+    const r = window.__rumo, b = r.construcoes.serializar().blocos.at(-1);
+    r.jogador.pos.set(b[1] + 0.5, b[3] / 100 + 3, b[2] + 0.5);
+    await new Promise((ok) => setTimeout(ok, 1200));
+    return { y: r.jogador.pos.y, topo: b[3] / 100 + 1 };
+  });
+  conferir(Math.abs(subiu.y - subiu.topo) < 0.05, `dá para ficar em pé em cima do bloco (y ${subiu.y.toFixed(2)}, topo ${subiu.topo.toFixed(2)})`);
+
+  // salvar e recarregar
+  await tocar('#btn-cancelar');
+  await page.evaluate(() => window.__rumo.salvarAgora());
+  const guardado = await page.evaluate(() => ({ madeira: window.__rumo.inventario.quantos('madeira'), total: window.__rumo.construcoes.total }));
+  await page.reload();
+  await page.waitForFunction(() => window.__rumo && window.__rumo.estado === 'inicio', null, { timeout: 60000 });
+  const voltou = await page.evaluate(() => ({ madeira: window.__rumo.inventario.quantos('madeira'), total: window.__rumo.construcoes.total, machado: window.__rumo.inventario.quantos('machado') }));
+  conferir(voltou.madeira === guardado.madeira && voltou.total === guardado.total && voltou.machado === 1, 'depois de recarregar, a mochila e os blocos continuam lá');
+  await page.evaluate(() => { localStorage.removeItem('rumo-a-terra:save:1'); });
 }
 
 async function testarComputador() {

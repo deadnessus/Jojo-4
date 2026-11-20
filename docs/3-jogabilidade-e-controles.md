@@ -94,7 +94,34 @@ Como em jogos de exploração clássicos, cada equipamento novo abre uma parte d
 | Mochila-jato | Pulos longos (a gravidade baixa ajuda) | Fabricada com metal raro (opcional, facilita) |
 | Chave dos Antigos | Cavernas de Cristal | 3 templos |
 
-## 3.8 Oficina (fabricar)
+## 3.8 Coletar, criar e construir (pedido do dono em 20/11/2026, já no jogo)
+
+**Coletar:** mire numa coisa do mundo e **segure ✋** (no computador, segure **E**). A cada golpe ela treme e solta lascas; quando quebra, os itens pulam e voam até você (como um ímã) e vão para a mochila. O que foi quebrado **cresce de novo** depois de alguns minutos, quando você está longe.
+
+| Coisa | Botão | Dá | Sem ferramenta | Com ferramenta | Volta em |
+|---|---|---|---|---|---|
+| Árvore-taça | Cortar | 🪵 madeira ×3–4 | 8 golpes (luva) | 3 golpes (machado) | 4 min |
+| Arbusto-chama | Colher | 🌿 fibra ×1–2 | 2 golpes | — | 2,5 min |
+| Pedra pequena | Quebrar | 🪨 pedra ×1–2 | 3 golpes | 1 golpe (picareta) | 6 min |
+| Pedra grande | Quebrar | 🪨 pedra ×4–6 | **precisa de picareta** | 4 golpes | 10 min |
+| Cristais azuis | Quebrar | 💎 cristal ×2–3 | **precisa de picareta** | 3 golpes | 10 min |
+
+**Mochila e criar (🎒):** a tela pausa o jogo e tem duas abas. **Mochila** mostra o que você tem (e "Colocar" nos itens de construir). **Criar** mostra as receitas, o que já tem e o que falta:
+
+| Receita | Ingredientes | Para que serve |
+|---|---|---|
+| 🪓 Machado de pedra | 🪵 2 + 🪨 2 + 🌿 1 | Corta árvores bem mais rápido |
+| ⛏️ Picareta de pedra | 🪵 2 + 🪨 3 + 🌿 1 | Quebra pedras grandes e cristais |
+| 🔥 Fogueira | 🪵 4 + 🪨 3 | Ilumina e esquenta (depois: cozinhar e espantar bichos) |
+| 📦 Bloco de madeira ×2 | 🪵 1 | Construir |
+| 🧱 Bloco de pedra ×2 | 🪨 2 | Construir |
+| 🔷 Bloco de cristal ×2 | 💎 1 | Construir (brilha) |
+
+**Construir:** os blocos encaixam numa grade de 1 metro, ao lado ou em cima uns dos outros. Dá para subir neles (pulando) e fazer ponte por cima do lago. Uma prévia verde mostra onde vai ficar (vermelha = não cabe). Mirando num bloco ou numa fogueira, o botão vira **Desmontar** e o item volta para a mochila.
+
+**Fica salvo neste aparelho:** a mochila e tudo que foi construído (ver 4.9).
+
+### Mais receitas para depois
 
 Receitas simples: **no máximo 3 ingredientes** e sempre mostrando o que falta. Exemplos:
 - Gancho = fibra ×4 + sucata ×2
