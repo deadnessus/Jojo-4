@@ -23,3 +23,6 @@ Avisar um acontecimento do jogo (opcional): `window.QG?.evento?.('fase_concluida
 
 ## Sugestões de melhoria ficam nas issues deste repositório
 Quando alguém (uma pessoa ou uma rotina automática) achar um problema ou uma ideia a partir dos números do site, a sugestão vira uma **issue** aqui, em português simples, com: o que foi observado, em qual versão (commit), e uma ideia do que mudar. Não faça a mudança sem que alguém aprove a issue.
+
+## Este jogo (plano em `docs/`)
+O jogo planejado é um tiro/aventura em primeira pessoa num planeta alienígena (consertar a nave, comida que estraga, bichos selvagens), para iPad/iPhone deitados. História, peças da nave, controles, arquitetura técnica, etapas e decisões estão em `docs/`. **Antes de programar, leia `docs/README.md`** e siga `docs/5-plano-de-construcao.md`, uma etapa por vez, respeitando as respostas de `docs/6-decisoes.md`.
