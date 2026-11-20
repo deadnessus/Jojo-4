@@ -24,6 +24,9 @@ As respostas do dono (20/11/2026) estão registradas abaixo. Onde não houve res
 | D16 | Desenhos | ⭐ Se o Jojô quiser desenhar bichos ou peças, os desenhos podem virar modelo ou textura (sem resposta: fica como opção) |
 | D17 | Duração do dia | ⭐ 16 minutos (sem resposta: vale a recomendação) |
 | D18 | Medição de acontecimentos | **Pendente** (explicação abaixo) |
+| D21 | O mundo dá a volta (pedido do dono, 20/11/2026) | **Sim:** o Vale passou a ter 512 m e não tem mais paredões. Andando sempre para o mesmo lado, você volta ao mesmo lugar (como dar a volta num planeta pequeno; cerca de 2 minutos andando). As próximas regiões podem virar áreas dentro desse mundo que dá a volta, em vez de mapas separados |
+| D22 | Aliens para enfrentar (pedido do dono, 20/11/2026) | **Sim:** Saltitos (fogem; dá para caçar), Rastejadores (caçam em grupo; não entram perto da nave nem perto de fogueiras) e Zumbidores (rasantes). Você tem **vida**; se zerar, desmaia e acorda na nave (perde metade da carne que carregava). A vida volta devagar quando nada te acerta |
+| D23 | Mapa (pedido do dono, 20/11/2026) | **Sim:** botão 🗺️ no canto da tela (ou tecla M) com o Vale visto de cima, você, a nave, as fogueiras e as construções |
 | D20 | Abertura e menu (pedido do dono, 20/11/2026) | **Abertura no espaço** (a Andorinha voando, a chuva de meteoros, o impacto, o fogo, a queda em Lúmen, tela preta, acordar no Vale), com botão Pular. Menu com **Novo jogo** (pede confirmação se houver jogo salvo) e **Continuar** (volta com a mochila, as construções e no mesmo lugar) |
 | D19 | Coletar e criar (pedido do dono, 20/11/2026) | **Sim:** quebrar árvores, arbustos, pedras e cristais segurando a ação; mochila com aba de criar; ferramentas, fogueira e blocos para construir e empilhar; tudo salvo no aparelho. Detalhes em 3.8 |
 

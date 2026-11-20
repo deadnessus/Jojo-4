@@ -67,7 +67,7 @@ Lúmen é inventado, mas cada característica vem de uma ideia que cientistas es
           [Ruínas dos Antigos e Cavernas de Cristal]
 ```
 
-O **Vale da Queda** é a base central. Cada região é um "mapa" separado, ligado aos outros por trilhas (como as unidades do Quake 2). Isso deixa o jogo leve no iPhone (ver a decisão D3).
+O **Vale da Queda** é a base central. **Atualização (D21):** o Vale agora dá a volta: andando sempre para o mesmo lado, você volta ao mesmo lugar, como num planeta pequeno. As outras regiões podem virar áreas dentro desse mundo que dá a volta (em vez de mapas separados); isso se decide quando chegarmos nelas.
 
 | Região | Como é | Bichos | Peça principal | Para entrar precisa de | Chefe |
 |---|---|---|---|---|---|

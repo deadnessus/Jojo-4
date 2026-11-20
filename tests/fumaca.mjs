@@ -178,6 +178,7 @@ async function testar(nome, largura, altura) {
   }
 
   if (nome === 'iphone') await testarColeta(page, toque, conferir, nome);
+  if (nome === 'ipad') await testarAliensMapaVolta(page, toque, conferir, nome);
 
   conferir(erros.length === 0, `sem erros no console${erros.length ? ': ' + erros.slice(0, 3).join(' | ') : ''}`);
   await ctx.close();
@@ -236,6 +237,14 @@ async function testarColeta(page, toque, conferir, nome) {
   const antes = await page.evaluate(() => window.__rumo.construcoes.total);
   await tocar('#btn-acao');
   await esperar(200);
+  // mira no topo do bloco que acabou de pôr (para o próximo ir em cima dele)
+  await page.evaluate(() => {
+    const r = window.__rumo, j = r.jogador, b = r.construcoes.listaBlocos().at(-1);
+    const alvo = { x: b.i + 0.5, y: b.base + 1, z: b.j + 0.5 };
+    const dx = alvo.x - j.pos.x, dz = alvo.z - j.pos.z, dy = alvo.y - (j.pos.y + 1.62);
+    j.girar(Math.atan2(dx, -dz) - j.rumo, Math.atan2(dy, Math.hypot(dx, dz)) - j.inclinacao);
+  });
+  await esperar(250);
   await tocar('#btn-acao');
   const depois = await page.evaluate(() => window.__rumo.construcoes.total);
   conferir(depois >= antes + 2, `blocos colocados (${depois - antes}), o segundo em cima do primeiro`);
@@ -275,6 +284,80 @@ async function testarColeta(page, toque, conferir, nome) {
   conferir(zerou.estado === 'prologo' && zerou.itens === 0 && zerou.total === 0 && zerou.salvo === null, 'confirmar começa do zero (mochila e construções apagadas) e mostra a abertura');
   await tocar('#btn-pular-prologo');
   await page.waitForFunction(() => window.__rumo.estado === 'jogando', null, { timeout: 8000 });
+}
+
+// Aliens (atirar até cair, levar mordida, desmaiar), mapa e dar a volta no mundo.
+async function testarAliensMapaVolta(page, toque, conferir, nome) {
+  console.log('-- aliens, mapa e a volta no mundo');
+  const centro = async (sel) => { const l = page.locator(sel); await l.scrollIntoViewIfNeeded(); const b = await l.boundingBox(); return [b.x + b.width / 2, b.y + b.height / 2]; };
+  const tocar = async (sel) => { const [x, y] = await centro(sel); await page.touchscreen.tap(x, y); await esperar(300); };
+
+  // um Rastejador parado na frente, a 6 m: segurar o tiro até ele cair e deixar carne
+  await page.evaluate(() => {
+    const r = window.__rumo, j = r.jogador;
+    j.pos.set(60, 0, 60); j.pos.y = r.grade.alturaEm(60, 60);
+    const c = r.criaturas.lista.find((x) => x.tipo === 'rastejador' && x.vivo);
+    window.__bicho = c;
+    c.pos.set(60, 0, 54); c.pos.y = r.grade.alturaEm(60, 54);
+    c.d = { ...c.d, visao: 0 }; c.estado = 'passeando'; c.casa.set(60, 0, 54); c.alvoX = 60; c.alvoZ = 54; c.espera = 99;
+  });
+  await esperar(300);
+  await page.evaluate(() => {
+    const r = window.__rumo, j = r.jogador, c = window.__bicho;
+    const dx = c.pos.x - j.pos.x, dz = c.pos.z - j.pos.z, dy = c.pos.y + 0.6 - (j.pos.y + 1.62);
+    j.girar(Math.atan2(dx, -dz) - j.rumo, Math.atan2(dy, Math.hypot(dx, dz)) - j.inclinacao);
+  });
+  const carneAntes = await page.evaluate(() => window.__rumo.inventario.quantos('carne'));
+  const [bx, by] = await centro('#btn-atirar');
+  await toque('touchStart', [[bx, by, 21]]);
+  await esperar(1600);
+  await toque('touchEnd', []);
+  await esperar(2800);
+  const r1 = await page.evaluate(() => ({ vivo: window.__bicho.vivo, carne: window.__rumo.inventario.quantos('carne') }));
+  conferir(!r1.vivo && r1.carne > carneAntes, `atirar no Rastejador: ele cai, some e deixa carne (${r1.carne})`);
+
+  // levar mordida e desmaiar
+  const vidaAntes = await page.evaluate(() => window.__rumo.vida);
+  await page.evaluate(() => {
+    const r = window.__rumo, j = r.jogador;
+    const c = r.criaturas.lista.find((x) => x.tipo === 'rastejador' && x.vivo);
+    window.__bicho2 = c;
+    c.d = { ...c.d, visao: 30 };
+    c.pos.set(j.pos.x + 1.5, 0, j.pos.z); c.pos.y = r.grade.alturaEm(c.pos.x, c.pos.z);
+    c.estado = 'cacando'; c.recarga = 0;
+  });
+  await esperar(1500);
+  const vidaDepois = await page.evaluate(() => window.__rumo.vida);
+  conferir(vidaDepois < vidaAntes, `a mordida do Rastejador tira vida (${Math.round(vidaAntes)} → ${Math.round(vidaDepois)})`);
+  await page.screenshot({ path: join(pastaCapturas, `${nome}-mordida.png`) });
+  await page.evaluate(() => window.__rumo.levarDano(200));
+  await esperar(2200);
+  const r2 = await page.evaluate(() => { const r = window.__rumo; return { vida: r.vida, dNave: Math.hypot(r.jogador.pos.x - r.nave.centro.x, r.jogador.pos.z - r.nave.centro.z) }; });
+  conferir(r2.vida === 100 && r2.dNave < 12, `vida zerada: desmaia e acorda na nave com a vida cheia (a ${r2.dNave.toFixed(1)} m da nave)`);
+  await esperar(3500);
+
+  // mapa pelo botão do canto
+  await tocar('#btn-mapa');
+  conferir(await page.locator('#tela-mapa').isVisible() && await page.evaluate(() => window.__rumo.estado) === 'mapa', 'o botão 🗺️ abre o mapa (e pausa)');
+  await page.screenshot({ path: join(pastaCapturas, `${nome}-mapa.png`) });
+  await tocar('#btn-fechar-mapa');
+  conferir(await page.evaluate(() => window.__rumo.estado) === 'jogando', 'fechar o mapa volta ao jogo');
+
+  // dar a volta: perto da borda leste, andar para o leste e aparecer do outro lado
+  await page.evaluate(() => {
+    const r = window.__rumo, j = r.jogador;
+    j.reposicionar(253, 30, 90);
+    for (const c of r.criaturas.lista) c.d = { ...c.d, visao: 0, dano: 0 };
+  });
+  await esperar(300);
+  const [jx, jy] = [1180 * 0.18, 820 * 0.7];
+  await toque('touchStart', [[jx, jy, 22]]);
+  for (let i = 1; i <= 6; i++) { await toque('touchMove', [[jx, jy - i * 12, 22]]); await esperar(30); }
+  await esperar(1600);
+  await toque('touchEnd', []);
+  const r3 = await page.evaluate(() => { const r = window.__rumo, j = r.jogador; return { x: j.pos.x, y: j.pos.y, chao: r.grade.alturaEm(j.pos.x, j.pos.z) }; });
+  conferir(r3.x < -240 && Math.abs(r3.y - r3.chao) < 0.6, `passando da borda leste, aparece do lado oeste, no chão (x ${r3.x.toFixed(1)})`);
+  await page.screenshot({ path: join(pastaCapturas, `${nome}-emenda.png`) });
 }
 
 async function testarComputador() {

@@ -12,10 +12,17 @@ test('a clareira da nave é plana', () => {
   }
 });
 
-test('o lago fica abaixo da água e o paredão da borda é alto', () => {
+test('o lago fica abaixo da água', () => {
   assert.ok(relevo.altura(82, -52) < vale.nivelAgua - 3);
-  assert.ok(relevo.altura(-190, 0) > relevo.altura(-120, 0) + 15);
-  assert.ok(relevo.altura(0, 190) > 20);
+});
+
+test('o mundo dá a volta sem emenda: as bordas opostas têm a mesma altura', () => {
+  const m = vale.tamanho / 2;
+  for (let k = -m; k < m; k += 37) {
+    assert.ok(Math.abs(relevo.altura(-m, k) - relevo.altura(m, k)) < 1e-6, `emenda leste-oeste em ${k}`);
+    assert.ok(Math.abs(relevo.altura(k, -m) - relevo.altura(k, m)) < 1e-6, `emenda norte-sul em ${k}`);
+  }
+  assert.ok(Math.abs(grade.alturaEm(m + 3.3, 20) - grade.alturaEm(-m + 3.3, 20)) < 1e-6, 'a grade também dá a volta');
 });
 
 test('o início do jogador fica em terra firme, fora da água', () => {

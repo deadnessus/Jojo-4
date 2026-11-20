@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { criarInventario, podeCriar, criar } from '../../src/logica/inventario.js';
 import { RECEITAS, ITENS, COLETA } from '../../src/dados/itens.js';
 import { montarSave, validarSave } from '../../src/logica/save.js';
+import { CRIATURAS } from '../../src/dados/criaturas.js';
 
 const receita = (id) => RECEITAS.find((r) => r.id === id);
 
@@ -46,6 +47,7 @@ test('toda receita e toda coleta usam itens que existem, com no máximo 3 ingred
     for (const id of Object.keys(r.custo)) assert.ok(ITENS[id], `${r.id}: ${id}`);
   }
   for (const [tipo, c] of Object.entries(COLETA)) for (const [id] of c.da) assert.ok(ITENS[id], `${tipo}: ${id}`);
+  for (const [tipo, c] of Object.entries(CRIATURAS)) for (const [id] of c.da) assert.ok(ITENS[id], `${tipo}: ${id}`);
 });
 
 test('save: guarda só códigos e números e recusa lixo', () => {
@@ -58,6 +60,10 @@ test('save: guarda só códigos e números e recusa lixo', () => {
   assert.deepEqual(sujo.inventario, [['madeira', 4]]);
   assert.deepEqual(sujo.blocos, []);
   assert.equal(validarSave({ jogo: 'outro', versao_save: 1 }), null);
+  const antigo = validarSave({ ...s, versao_save: 1, pos: [100, 100, 0] });
+  assert.deepEqual(antigo.inventario, [['madeira', 4]], 'save antigo mantém a mochila');
+  assert.deepEqual(antigo.blocos, [], 'save antigo perde as construções (o Vale mudou)');
+  assert.equal(antigo.pos, null);
   assert.deepEqual(validarSave({ ...s, pos: [1520, -330, 45] }).pos, [1520, -330, 45]);
   assert.equal(validarSave({ ...s, pos: [1.5, 0, 0] }).pos, null);
   const inv = criarInventario([['madeira', 3]]);

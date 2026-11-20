@@ -78,6 +78,15 @@ O maior risco de um jogo de tiro em primeira pessoa no toque é o **controle ser
 - **Endereços de teste:** `?debug=1` mostra quadros por segundo, chamadas de desenho e triângulos; `?visual=liso` ou `?visual=pixelado`; `?hora=0.75` muda a hora do céu (0,25 nasce, 0,5 meio-dia, 0,75 pôr do sol).
 - **Verificador do queres.games:** `node .claude/skills/preparar-jogo-para-queres-games/verificar-jogo.mjs .`
 
+## Mundo que dá a volta, aliens e mapa (pedido do dono, 20/11/2026)
+
+Decisões D21, D22 e D23:
+- **Mundo que dá a volta (toro):** `src/logica/toro.js` (contas do caminho mais curto), ruído periódico em `src/logica/ruido.js` e relevo/grade que se repetem sem emenda (`src/logica/relevo.js`). O Vale tem 512 m e não tem paredões. Cada pedaço do terreno, da vegetação e dos cristais é desenhado na cópia mais perto da câmera; colisões, mirar, construir e os bichos usam distâncias que passam pela emenda. Save versão 2 (as construções da versão 1 não servem mais porque o relevo mudou; a mochila continua).
+- **Aliens:** `src/entidades/criaturas.js` + `src/dados/criaturas.js`. Saltitos, Rastejadores (cercam, mordem, fogem quando estão fracos, têm medo de fogo, não entram na base) e Zumbidores (voam em círculos e dão rasantes). Derrotados caem, somem numa nuvenzinha e deixam itens (carne, cristal, carapaça) e voltam a aparecer longe depois de um tempo. A ajuda na mira também vale para os bichos.
+- **Vida e desmaio:** barra de vida no HUD, tela vermelha e tremor ao levar dano, vida que volta devagar, desmaio com volta para a nave.
+- **Mapa:** `src/ui/mapa.js`, botão 🗺️ (tecla M).
+- Teste de fumaça: atirar num Rastejador até ele cair e deixar carne, mordida, desmaio, mapa e passar pela emenda (iPad).
+
 ## Abertura e Novo jogo (pedido do dono, 20/11/2026)
 
 Feito logo depois da coleta (decisão D20). Adianta um pedaço da Etapa 1 (o prólogo da queda):
