@@ -13,8 +13,8 @@ test('valores estranhos voltam para o padrão', () => {
   assert.equal(c.botoes, 'grande');
 });
 
-test('o botão de atirar fica na direita; a esquerda só se escolher nas Opções', () => {
-  assert.equal(validarConfig(null).atirar, 'direita');
-  assert.equal(validarConfig({ versao: 1, atirar: 'esquerda' }).atirar, 'direita', 'opções antigas voltam para a direita');
-  assert.equal(validarConfig({ versao: PADRAO.versao, atirar: 'esquerda' }).atirar, 'esquerda');
+test('o botão de atirar fica na esquerda; a direita só se escolher nas Opções', () => {
+  assert.equal(validarConfig(null).atirar, 'esquerda');
+  assert.equal(validarConfig({ versao: 2, atirar: 'direita' }).atirar, 'esquerda', 'opções antigas vão para a esquerda');
+  assert.equal(validarConfig({ versao: PADRAO.versao, atirar: 'direita' }).atirar, 'direita');
 });
