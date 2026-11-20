@@ -58,5 +58,10 @@ test('save: guarda só códigos e números e recusa lixo', () => {
   assert.deepEqual(sujo.inventario, [['madeira', 4]]);
   assert.deepEqual(sujo.blocos, []);
   assert.equal(validarSave({ jogo: 'outro', versao_save: 1 }), null);
+  assert.deepEqual(validarSave({ ...s, pos: [1520, -330, 45] }).pos, [1520, -330, 45]);
+  assert.equal(validarSave({ ...s, pos: [1.5, 0, 0] }).pos, null);
+  const inv = criarInventario([['madeira', 3]]);
+  inv.limpar();
+  assert.equal(inv.lista().length, 0);
   assert.equal(validarSave('texto'), null);
 });

@@ -2,7 +2,9 @@
 
 ## 1.1 A história em 3 atos
 
-### Prólogo: a queda (jogável, cerca de 2 minutos)
+### Prólogo: a queda (feito em 20/11/2026: cena de abertura de ~18 s, com botão Pular)
+> **Como ficou no jogo:** a câmera mostra a Andorinha de fora, no espaço, com o Colosso e Lúmen ao fundo; chega a chuva de meteoros com alarme vermelho; um meteoro grande acerta a nave, a asa se solta e ela pega fogo; a nave despenca em Lúmen entrando na atmosfera em chamas; clarão, tela preta, e você acorda deitado no Vale, olhando o céu, e se levanta. As falas aparecem na tela (narrador e ÍRIS). Código em `src/cenas/prologo.js`.
+
 Ano 2193. Você pilota sozinho a **Andorinha**, uma nave de carga pequena, de volta para a Terra depois de dois anos trabalhando numa colônia distante. (A andorinha é a ave que sempre volta para casa.)
 
 Naves como a Andorinha viajam entre estrelas aos **saltos**. Depois de cada salto, o motor precisa descansar umas horas perto de uma estrela. Numa dessas paradas, no sistema da estrela **Brasa**, a nave atravessa sem aviso o **rastro de um cometa**: uma chuva de pedrinhas e pedras grandes.

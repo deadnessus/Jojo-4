@@ -78,6 +78,14 @@ O maior risco de um jogo de tiro em primeira pessoa no toque é o **controle ser
 - **Endereços de teste:** `?debug=1` mostra quadros por segundo, chamadas de desenho e triângulos; `?visual=liso` ou `?visual=pixelado`; `?hora=0.75` muda a hora do céu (0,25 nasce, 0,5 meio-dia, 0,75 pôr do sol).
 - **Verificador do queres.games:** `node .claude/skills/preparar-jogo-para-queres-games/verificar-jogo.mjs .`
 
+## Abertura e Novo jogo (pedido do dono, 20/11/2026)
+
+Feito logo depois da coleta (decisão D20). Adianta um pedaço da Etapa 1 (o prólogo da queda):
+- `src/cenas/prologo.js`: cena no espaço (Andorinha inteira, Colosso, Lúmen, estrelas), meteoros com rastro de fogo, impacto com explosão e a asa se soltando, queda em chamas, clarão e tela preta; sons de motor, alarme, explosão e ronco da queda; botão "Pular".
+- Acordar no Vale: dois piscares de olhos, deitado olhando o céu, levantando.
+- Menu: **Novo jogo** (com confirmação se houver jogo salvo; apaga mochila e construções e recoloca árvores e pedras) e **Continuar** (mochila, construções e posição do jogador).
+- Teste de fumaça: abertura, pular, continuar e confirmação do novo jogo (52 conferências).
+
 ## Coletar, criar e construir (pedido do dono, 20/11/2026)
 
 Feito logo depois da Etapa 0 (decisão D19, detalhes em 3.8):

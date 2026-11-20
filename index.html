@@ -52,9 +52,18 @@
   <div class="cartao">
     <h1 class="titulo">RUMO À TERRA</h1>
     <p class="subtitulo">Sua nave caiu num planeta desconhecido. Conserte a Andorinha e volte para casa.</p>
-    <button id="btn-jogar" class="grande" type="button">Jogar</button>
-    <button id="btn-opcoes" type="button">Opções</button>
-    <p class="nota">Versão de teste: andar, olhar, treinar a mira, pegar madeira e pedra, criar e construir.</p>
+    <div id="botoes-inicio" class="pilha">
+      <button id="btn-continuar-jogo" class="grande" type="button" hidden>Continuar</button>
+      <p id="info-save" class="nota" hidden></p>
+      <button id="btn-novo-jogo" class="grande" type="button">Novo jogo</button>
+      <button id="btn-opcoes" type="button">Opções</button>
+    </div>
+    <div id="confirmar-novo" class="pilha" hidden>
+      <p class="aviso-novo">Começar um jogo novo? A mochila e as construções guardadas neste aparelho vão ser apagadas.</p>
+      <button id="btn-confirmar-novo" class="grande perigo" type="button">Sim, começar de novo</button>
+      <button id="btn-cancelar-novo" type="button">Voltar</button>
+    </div>
+    <p class="nota">Versão de teste: a queda da nave, explorar o Vale, pegar madeira e pedra, criar e construir.</p>
   </div>
 </section>
 
@@ -109,6 +118,14 @@
     <button id="btn-recarregar" class="grande" type="button">Tentar de novo</button>
   </div>
 </section>
+
+<div id="prologo" hidden>
+  <div id="prologo-alarme"></div>
+  <div id="prologo-flash"></div>
+  <div id="prologo-fala" hidden><span id="prologo-quem" class="quem" hidden></span><span id="prologo-texto"></span></div>
+  <button id="btn-pular-prologo" type="button">Pular ▶▶</button>
+</div>
+<div id="cortina" aria-hidden="true"></div>
 
 <section id="tela-girar" hidden>
   <div class="aparelho" aria-hidden="true"></div>

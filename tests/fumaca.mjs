@@ -57,11 +57,19 @@ async function testar(nome, largura, altura) {
   conferir(true, `carregou em ${Date.now() - t0} ms`);
   await page.screenshot({ path: join(pastaCapturas, `${nome}-menu.png`) });
 
-  // Jogar (toque de verdade no botão)
-  const jogar = await page.locator('#btn-jogar').boundingBox();
-  await page.touchscreen.tap(jogar.x + jogar.width / 2, jogar.y + jogar.height / 2);
+  // Novo jogo (toque de verdade no botão): abertura no espaço, pular, acordar no Vale
+  conferir(!(await page.locator('#btn-continuar-jogo').isVisible()), 'sem jogo salvo, o menu não mostra "Continuar"');
+  const novo = await page.locator('#btn-novo-jogo').boundingBox();
+  await page.touchscreen.tap(novo.x + novo.width / 2, novo.y + novo.height / 2);
   await esperar(400);
-  conferir((await estado()).estado === 'jogando', 'tocar em "Jogar" começa o jogo');
+  conferir((await estado()).estado === 'prologo' && await page.locator('#prologo').isVisible(), '"Novo jogo" começa a abertura no espaço');
+  await esperar(2500);
+  await page.screenshot({ path: join(pastaCapturas, `${nome}-abertura.png`) });
+  const pular = await page.locator('#btn-pular-prologo').boundingBox();
+  await page.touchscreen.tap(pular.x + pular.width / 2, pular.y + pular.height / 2);
+  await page.waitForFunction(() => window.__rumo.estado === 'jogando', null, { timeout: 8000 });
+  conferir((await estado()).estado === 'jogando', '"Pular" vai para o Vale da Queda');
+  await esperar(3300); // tempo de "acordar"
 
   // Joystick: dedão esquerdo empurrado para cima = andar para a frente
   let a = await estado();
@@ -243,15 +251,30 @@ async function testarColeta(page, toque, conferir, nome) {
   });
   conferir(Math.abs(subiu.y - subiu.topo) < 0.05, `dá para ficar em pé em cima do bloco (y ${subiu.y.toFixed(2)}, topo ${subiu.topo.toFixed(2)})`);
 
-  // salvar e recarregar
+  // salvar e recarregar: aparece "Continuar", e tudo volta (inclusive onde o jogador estava)
   await tocar('#btn-cancelar');
-  await page.evaluate(() => window.__rumo.salvarAgora());
-  const guardado = await page.evaluate(() => ({ madeira: window.__rumo.inventario.quantos('madeira'), total: window.__rumo.construcoes.total }));
+  await page.evaluate(() => { const j = window.__rumo.jogador; j.pos.set(30, j.pos.y, 25); });
+  await esperar(300);
+  await page.evaluate(() => { window.__rumo.inventario.adicionar('madeira', 1); window.__rumo.salvarAgora(); });
+  const guardado = await page.evaluate(() => ({ madeira: window.__rumo.inventario.quantos('madeira'), total: window.__rumo.construcoes.total, x: window.__rumo.jogador.pos.x }));
   await page.reload();
   await page.waitForFunction(() => window.__rumo && window.__rumo.estado === 'inicio', null, { timeout: 60000 });
-  const voltou = await page.evaluate(() => ({ madeira: window.__rumo.inventario.quantos('madeira'), total: window.__rumo.construcoes.total, machado: window.__rumo.inventario.quantos('machado') }));
-  conferir(voltou.madeira === guardado.madeira && voltou.total === guardado.total && voltou.machado === 1, 'depois de recarregar, a mochila e os blocos continuam lá');
-  await page.evaluate(() => { localStorage.removeItem('rumo-a-terra:save:1'); });
+  conferir(await page.locator('#btn-continuar-jogo').isVisible(), 'com jogo salvo, o menu mostra "Continuar"');
+  await tocar('#btn-continuar-jogo');
+  const voltou = await page.evaluate(() => ({ estado: window.__rumo.estado, madeira: window.__rumo.inventario.quantos('madeira'), total: window.__rumo.construcoes.total, machado: window.__rumo.inventario.quantos('machado'), x: window.__rumo.jogador.pos.x }));
+  conferir(voltou.estado === 'jogando' && voltou.madeira === guardado.madeira && voltou.total === guardado.total && voltou.machado === 1 && Math.abs(voltou.x - guardado.x) < 0.2,
+    '"Continuar" volta com a mochila, os blocos e no mesmo lugar');
+
+  // Novo jogo de novo: pede confirmação e apaga tudo
+  await tocar('#btn-pausar');
+  await tocar('#btn-sair');
+  await tocar('#btn-novo-jogo');
+  conferir(await page.locator('#confirmar-novo').isVisible(), 'com jogo salvo, "Novo jogo" pede confirmação');
+  await tocar('#btn-confirmar-novo');
+  const zerou = await page.evaluate(() => ({ estado: window.__rumo.estado, itens: window.__rumo.inventario.lista().length, total: window.__rumo.construcoes.total, salvo: localStorage.getItem('rumo-a-terra:save:1') }));
+  conferir(zerou.estado === 'prologo' && zerou.itens === 0 && zerou.total === 0 && zerou.salvo === null, 'confirmar começa do zero (mochila e construções apagadas) e mostra a abertura');
+  await tocar('#btn-pular-prologo');
+  await page.waitForFunction(() => window.__rumo.estado === 'jogando', null, { timeout: 8000 });
 }
 
 async function testarComputador() {
@@ -263,8 +286,11 @@ async function testarComputador() {
   page.on('console', (m) => { if (m.type() === 'error') erros.push(m.text()); });
   await page.goto(`${base}?debug=1`);
   await page.waitForFunction(() => window.__rumo && window.__rumo.estado === 'inicio', null, { timeout: 60000 });
-  await page.click('#btn-jogar');
+  await page.click('#btn-novo-jogo');
   await esperar(300);
+  await page.click('#btn-pular-prologo');
+  await page.waitForFunction(() => window.__rumo.estado === 'jogando', null, { timeout: 8000 });
+  await esperar(3300);
   conferir(!(await page.locator('#btn-atirar').isVisible()), 'sem toque, os botões de toque ficam escondidos');
   const pos = () => page.evaluate(() => ({ x: window.__rumo.jogador.pos.x, z: window.__rumo.jogador.pos.z }));
   const a = await pos();
