@@ -5,7 +5,7 @@ Cada pergunta tem opções e a **recomendação** (⭐). Para responder, basta d
 ## História e tom
 
 **D1. Nomes.** Os nomes atuais são provisórios. O Jojô e o Bento querem escolher?
-- Jogo: *Náufrago Estelar*, *Rumo à Terra*, *Andorinha*, *Planeta Perdido*, ... ou outro.
+- Jogo: *Náufrago Estelar*, *Rumo à Terra*, *Andorinha*, *Planeta Perdido*, ... ou outro. Atenção: o site já tem a **Invasão Estelar** e o **Horizonte**, então é bom fugir de nomes parecidos (por isso a expedição perdida virou **Expedição Cruzeiro**). O nome também define o endereço: `queres.games/jogar/<nome>/`.
 - Planeta (lua): *Lúmen*. Planeta gigante: *Colosso*. Estrela: *Brasa*.
 - Nave: *Andorinha*. Inteligência da nave: *ÍRIS*. Alienígena: *Ulo*. Mascote: *Bolota*.
 - ⭐ As crianças escolhem os que quiserem; o resto fica como está.
@@ -78,10 +78,10 @@ Cada pergunta tem opções e a **recomendação** (⭐). Para responder, basta d
 
 ## Técnica
 
-**D14. Salvar na nuvem.**
+**D14. Salvar na nuvem.** (Já li o repositório `queres-games`: a conta, as funções do Cloudflare e o banco D1 já existem, e o Infiltrados na Órbita já guarda dados por conta do mesmo jeito. Então é viável e segue o padrão do site, ver 4.9.)
 - Quando: A ⭐ logo depois da Floresta (Etapa 3) / B já na primeira versão / C no fim.
-- Como: ⭐ uma API **genérica** de saves no site (`/api/saves/<jogo>/<slot>`), que depois serve para **todos** os jogos do queres.games.
-- Acesso: esta sessão tentou abrir o repositório `queres-games` para ver como a conta (`/conta.js`) funciona e **a permissão foi negada**. A parte de servidor deve ser feita numa sessão daquele repositório. Quer liberar o acesso de leitura para as sessões deste jogo (para o lado do jogo ficar igual ao do site), ou prefere fazer tudo pela sessão do `queres-games`?
+- Como: ⭐ rota e tabela só deste jogo (`/api/<slug>/saves`, tabela `nf_saves`), como os outros jogos do site fazem. Se depois outros jogos quiserem, vira uma rota genérica.
+- Quem faz a parte do site: uma sessão do `queres-games` com permissão de escrita (a leitura já funciona daqui, porque o repositório é público). Pela regra do site, **você confirma antes do merge**, por ser dado de jogador num site infantil.
 
 **D15. Quais aparelhos as crianças usam?** Modelo do iPad e do iPhone (por exemplo "iPad 9ª geração", "iPhone 11") e a versão do iOS. Isso define o orçamento de desempenho. O jogo vai precisar de **iOS 16.4 ou mais novo**.
 

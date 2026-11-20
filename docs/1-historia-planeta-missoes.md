@@ -15,15 +15,15 @@ Naves como a Andorinha viajam entre estrelas aos **saltos**. Depois de cada salt
 - Você acorda nos destroços. A ÍRIS fala fraquinho: a bateria principal foi arrancada na queda.
 - **Kit de emergência:** 6 rações (duram muito, mas são só 6), uma lanterna e sementes de feijão.
 - Você sai da nave e vê o céu: o **Colosso**, um planeta gigante listrado, ocupa um pedaço enorme do céu.
-- **O esqueleto:** perto da nave, um traje espacial antigo, com um esqueleto dentro do capacete. Ao lado, um **Desintegrador** (arma espacial que recarrega sozinha) e um gravador: *"Registro 1 de 12, Expedição Horizonte. Meu nome é Tavares..."* Quem era ele? Como chegou aqui? Começa o mistério.
+- **O esqueleto:** perto da nave, um traje espacial antigo, com um esqueleto dentro do capacete. Ao lado, um **Desintegrador** (arma espacial que recarrega sozinha) e um gravador: *"Registro 1 de 12, Expedição Cruzeiro. Meu nome é Tavares..."* Quem era ele? Como chegou aqui? Começa o mistério. (O nome da expedição vem do Cruzeiro do Sul, a constelação que os navegadores usavam para achar o caminho.)
 - Primeiros bichos: os **Saltitos** (inofensivos) e depois os **Rastejadores** (o primeiro inimigo).
 - Primeira fogueira, primeiras frutas, primeira noite: a floresta do outro lado do lago **brilha no escuro**.
 - **Primeira peça:** achar a **bateria principal**, que caiu numa colina perto do lago, num ninho de Rastejadores. Com a bateria no lugar: luz, porta, oficina, geladeira e scanner voltam a funcionar.
 - A ÍRIS "acorda de vez", escaneia a região e acha os sinais das outras peças. Aparece o mapa.
 
 ### Ato 2: explorar (4 regiões)
-- **Floresta Lumina:** você conhece o **Ulo**, um alienígena que vive ali há 120 anos. O tradutor dele está quebrado (fala tudo embaralhado, de um jeito engraçado). Consertado o tradutor, ele vira seu principal ajudante: troca coisas, ensina receitas e dá sementes. Ele já conheceu humanos: a **Expedição Horizonte**, 60 anos atrás. Por isso o tradutor fala português... com gírias de 60 anos atrás ("Que supimpa!"). Aqui também estão o mascote **Bolota** e o ninho da **Rainha Zumbidora**, um inseto gigante que coleciona coisas brilhantes, inclusive o **bocal do motor** da Andorinha.
-- **Desfiladeiro dos Ventos:** a **base abandonada da Expedição Horizonte**, com uma antena de rádio. **Virada do meio da história:** com a antena consertada, você fala com a Terra. A resposta: *"Recebemos você! Mas a nave de resgate mais próxima leva 2 anos para chegar."* Ou seja, é você quem vai ter que consertar a nave. A Terra manda as instruções do motor de salto: ele precisa de um **Cristal de Salto**, e a Expedição Horizonte achou cristais neste planeta.
+- **Floresta Lumina:** você conhece o **Ulo**, um alienígena que vive ali há 120 anos. O tradutor dele está quebrado (fala tudo embaralhado, de um jeito engraçado). Consertado o tradutor, ele vira seu principal ajudante: troca coisas, ensina receitas e dá sementes. Ele já conheceu humanos: a **Expedição Cruzeiro**, 60 anos atrás. Por isso o tradutor fala português... com gírias de 60 anos atrás ("Que supimpa!"). Aqui também estão o mascote **Bolota** e o ninho da **Rainha Zumbidora**, um inseto gigante que coleciona coisas brilhantes, inclusive o **bocal do motor** da Andorinha.
+- **Desfiladeiro dos Ventos:** a **base abandonada da Expedição Cruzeiro**, com uma antena de rádio. **Virada do meio da história:** com a antena consertada, você fala com a Terra. A resposta: *"Recebemos você! Mas a nave de resgate mais próxima leva 2 anos para chegar."* Ou seja, é você quem vai ter que consertar a nave. A Terra manda as instruções do motor de salto: ele precisa de um **Cristal de Salto**, e a Expedição Cruzeiro achou cristais neste planeta.
 - **Terras Quentes:** gêiseres, lama quente e a **Estação de Mineração K-7**, abandonada pela Companhia Kronos há décadas. Os robôs continuam trabalhando e acham que você é um invasor. Lá estão o **núcleo do reator** e o **eletrolisador** (a máquina que faz combustível com água).
 - **Picos Gelados:** o **observatório** da Expedição, com o **rastreador de estrelas**. É preciso calibrá-lo à noite, alinhando constelações.
 - **Placas do escudo térmico:** uma escondida em cada região (são 6), em lugares difíceis, como os segredos do Quake.
@@ -49,7 +49,7 @@ Lúmen é inventado, mas cada característica vem de uma ideia que cientistas es
 | **Gravidade menor** (0,8 da Terra) | Em mundos menores, a gravidade é mais fraca | **Pulo mais alto**, quedas mais leves, árvores mais altas. E a explicação do final: sair de um lugar com gravidade menor gasta menos combustível, por isso dá para decolar com uma nave consertada "na raça" |
 | **Brilho no escuro** (bioluminescência) | Na Terra há fungos, vaga-lumes e bichos do fundo do mar que brilham | À noite, a Floresta Lumina brilha em azul e verde |
 | O **dia** dura o tempo de uma volta em torno do Colosso | Numa exolua travada, o "dia" é o tempo da volta em torno do planeta gigante | No jogo, **1 dia = 16 minutos** de jogo (10 de dia, 4 de noite, 2 de amanhecer e entardecer) |
-| **Chuvas de meteoros** que voltam de tempos em tempos | O rastro de um cometa cruza o sistema sempre na mesma época (como as chuvas de meteoros da Terra) | Explica a queda da Andorinha **e** a da Expedição Horizonte. À noite, às vezes caem meteoritos com **metal raro**: corra para pegar |
+| **Chuvas de meteoros** que voltam de tempos em tempos | O rastro de um cometa cruza o sistema sempre na mesma época (como as chuvas de meteoros da Terra) | Explica a queda da Andorinha **e** a da Expedição Cruzeiro. À noite, às vezes caem meteoritos com **metal raro**: corra para pegar |
 
 **O céu de Lúmen:** de dia, céu azul-esverdeado claro com o Colosso enorme (listras laranja e creme, anéis finos). À noite, a luz refletida pelo Colosso clareia um pouco o chão (a noite nunca fica preta), há estrelas e duas luazinhas. No eclipse, a Brasa some atrás do Colosso e fica um anel de luz em volta dele.
 
@@ -71,8 +71,8 @@ O **Vale da Queda** é a base central. Cada região é um "mapa" separado, ligad
 |---|---|---|---|---|---|
 | **Vale da Queda** (base) | Campo de grama roxa, lago, a nave caída, colinas | Saltitos, Rastejadores, Boca-do-Lago (no lago) | Bateria principal | nada | (ninho de Rastejadores) |
 | **Floresta Lumina** | Cogumelos-árvore gigantes, sombra, brilha à noite; casa-cogumelo do Ulo | Zumbidores, Cuspidores, Planadores noturnos | Bocal do motor e musgo-de-ar | bateria instalada (lanterna forte) | **Rainha Zumbidora** |
-| **Desfiladeiro dos Ventos** | Cânions vermelhos, pontes de pedra, vento forte, ninhos nos paredões; base da Expedição Horizonte | Zumbidores, Casco-de-Pedra | Antena | **gancho** (feito com fibra da floresta) | **Grande Casco** |
-| **Terras Quentes** | Gêiseres, lama borbulhante, vapor; Estação de Mineração K-7 | Robôs da Kronos, Cuspidores de fogo | Núcleo do reator e eletrolisador | **botas térmicas** (achadas na base Horizonte) | **Escavadeira-Mãe** (robô gigante) |
+| **Desfiladeiro dos Ventos** | Cânions vermelhos, pontes de pedra, vento forte, ninhos nos paredões; base da Expedição Cruzeiro | Zumbidores, Casco-de-Pedra | Antena | **gancho** (feito com fibra da floresta) | **Grande Casco** |
+| **Terras Quentes** | Gêiseres, lama borbulhante, vapor; Estação de Mineração K-7 | Robôs da Kronos, Cuspidores de fogo | Núcleo do reator e eletrolisador | **botas térmicas** (achadas na base Cruzeiro) | **Escavadeira-Mãe** (robô gigante) |
 | **Picos Gelados** | Neve azulada, cristais de gelo, aurora no céu; observatório | Hexamutes (neutros), Rastejadores brancos | Rastreador de estrelas | **traje térmico** (feito com isolante da estação K-7) | **Grande Garra** (Rastejador gigante das neves) |
 | **Ruínas e Cavernas de Cristal** | Templos dos Antigos, cavernas que brilham, quebra-cabeças de luz e espelhos | Guardiões pequenos, Rastejadores de cristal | Cristal de Salto | os 3 pedaços da **Chave dos Antigos** | **Guardião de Cristal** |
 
@@ -101,7 +101,7 @@ Regra de tom: os bichos têm formas bem claras (dá para reconhecer de longe), c
 - **Você, o piloto:** não aparece (primeira pessoa). A ÍRIS chama você de "Comandante". Sem nome nem gênero definidos (decisão D9).
 - **ÍRIS:** a inteligência da nave. Voz calma, faz piadas ruins de robô, dá dicas e avisa dos perigos. Fica mais esperta a cada sistema consertado (começa sem energia nem para enxergar).
 - **Ulo:** alienígena da espécie *vaari*, com 2,5 m de altura, quatro braços e pele cinza-azulada com manchas que **mudam de cor conforme o humor** (como o polvo faz de verdade). É jardineiro e inventor e mora numa casa-cogumelo com horta. Fala devagar. Caiu aqui há 120 anos, a nave dele não tinha conserto e ele **desistiu de voltar**. Ao longo do jogo, você devolve a esperança a ele.
-- **Tavares:** explorador da Expedição Horizonte (o esqueleto). Os 12 registros dele contam a história aos poucos.
+- **Tavares:** explorador da Expedição Cruzeiro (o esqueleto). Os 12 registros dele contam a história aos poucos.
 - **Bolota:** o mascote. **Nunca morre**: se apanhar, volta correndo para a base.
 - **Unidade 7:** um robô coletor da Kronos que dá para reprogramar (missão). Vira o guarda da base.
 
@@ -111,7 +111,7 @@ Elas aparecem conforme você explora. Nenhuma é obrigatória, mas todas ajudam.
 
 | # | Missão | Onde | O que acontece | Recompensa |
 |---|---|---|---|---|
-| 1 | **Os registros do Tavares** | todas | Achar os 12 gravadores da Expedição Horizonte | A história completa e o **traje antigo** (mais proteção) |
+| 1 | **Os registros do Tavares** | todas | Achar os 12 gravadores da Expedição Cruzeiro | A história completa e o **traje antigo** (mais proteção) |
 | 2 | **O tradutor do Ulo** | Floresta | Levar uma bobina da nave para consertar o tradutor | O Ulo passa a falar (e a ajudar) |
 | 3 | **Bolota** | Vale/Floresta | Um filhote preso embaixo de um tronco; tirar e curar | **Mascote** que fareja comida e avisa de perigo |
 | 4 | **A horta de feijão** | Base | Plantar as sementes do kit, regar e colher a cada 2 dias. Depois o Ulo dá sementes alienígenas | Comida que não acaba |
@@ -119,7 +119,7 @@ Elas aparecem conforme você explora. Nenhuma é obrigatória, mas todas ajudam.
 | 6 | **O ladrão brilhante** | Base/Floresta | Um Zumbidor rouba ferramentas da base; siga-o até o ninho | Leva à Rainha Zumbidora e ao bocal do motor |
 | 7 | **Noite de eclipse** | todas | A cada 3 dias escurece no meio do dia: fique perto da luz até passar | Plantas raras que só abrem no eclipse |
 | 8 | **Chuva de meteoros** | todas | À noite caem meteoritos; corra até eles | **Metal raro** para melhorias |
-| 9 | **O rádio da Base Horizonte** | Desfiladeiro | Achar 3 fusíveis para ligar a antena | Contato com a Terra (virada da história) |
+| 9 | **O rádio da Base Cruzeiro** | Desfiladeiro | Achar 3 fusíveis para ligar a antena | Contato com a Terra (virada da história) |
 | 10 | **O mapa das estrelas** | Picos Gelados | À noite, alinhar as constelações no observatório (minijogo) | Rastreador de estrelas calibrado |
 | 11 | **As torres teimosas** | Terras Quentes | Redirecionar cabos para desligar as torres de vigilância (quebra-cabeça) | Entrar na estação K-7 sem ser visto |
 | 12 | **Unidade 7** | Terras Quentes | Reprogramar um robô coletor | Guarda da base à noite |

@@ -4,7 +4,18 @@
 >
 > **Para quem for programar:** isto é o contrato do projeto. Se for preciso mudar algo daqui, atualize este documento no mesmo commit.
 
-## 4.1 Restrições que vêm do queres.games (não mudam)
+## 4.1 Como o queres.games funciona (lido no repositório `deadnessus/queres-games`)
+
+- O site é feito com **Astro** e publicado pelo **Cloudflare Pages**: cada merge na `main` do `queres-games` publica sozinho.
+- Cada jogo é uma **cópia estática** em `public/jogar/<slug>/` do `queres-games`, feita por uma sessão daquele repositório (skill `publicar-no-queres-games`), que também grava `versao.json` (o commit deste repositório) e cria o card e o post no blog.
+- Na hora do build, o site **injeta sozinho** a telemetria (`/telemetria.js`) e o contador em todas as páginas do jogo. O jogo não faz nada para isso.
+- **Funções no servidor** são Cloudflare Pages Functions em `functions/api/...`, com um banco **D1 único** (ligação `DB`) para o site todo: contas, sessões, rankings, telemetria. Cada jogo usa tabelas com **prefixo próprio** (`jp_`, `ie_`, `inf_`).
+- A **conta** (apelido gerado + código de 3 caracteres) já existe e é compartilhada por todos os jogos. Cliente pronto em `/conta.js` (`QGConta`).
+- **Cache:** o Cloudflare deixa o navegador guardar JS e CSS por **4 horas**, mas o `index.html` sempre é conferido. Sem cuidado, depois de uma atualização a página nova roda com módulos JS antigos misturados. A solução que o site já usa no Bento City é pôr a **versão no endereço** de cada arquivo pelo import map (ver 4.13).
+- **Outros jogos 3D do site** usam Three.js guardado dentro do jogo: Ilha Selvagem (r170), Fúria e Bento City (r160). O **Fúria** (do Bento) já tem um modo de tiro em primeira pessoa com joystick e botões no tablet (`public/jogar/furia/js/touch.js`): é uma boa referência de como a família já joga.
+- **Limites do plano grátis**, divididos com o site inteiro: D1 com cerca de 100 mil linhas gravadas por dia e as Functions com 100 mil pedidos por dia. O save na nuvem precisa ser econômico (ver 4.9).
+
+### Regras do queres.games que não mudam
 
 - Tudo dentro da pasta do jogo: **nada de CDN**, Google Fonts ou outro site. Bibliotecas em `vendor/`.
 - **Caminhos relativos** (`src/main.js`). As únicas exceções aceitas pelo site são `/conta.js` e `/api/...`.
@@ -36,7 +47,7 @@ Esse estilo é também o que um programador sem artista consegue fazer bem: form
 | Peça | Escolha | Por quê |
 |---|---|---|
 | Linguagem | **JavaScript puro em módulos ES** (`<script type="module">`), **sem etapa de build** | O dono não precisa instalar nada; os arquivos vão direto para o site; qualquer sessão consegue editar e testar |
-| 3D | **Three.js**, versão fixa (por exemplo r170+), copiada para `vendor/three/` com a licença MIT | Madura, documentada, roda bem no Safari; evita escrever um motor WebGL do zero. Importada por **import map com caminho relativo** (`"three": "./vendor/three/three.module.min.js"`), o que pede **iOS 16.4 ou mais novo** |
+| 3D | **Three.js r170** (a mesma versão da Ilha Selvagem, já testada no site), copiada para `vendor/three/` com a licença MIT. Só os arquivos usados | Madura, documentada, roda bem no Safari; evita escrever um motor WebGL do zero. Importada por **import map com caminho relativo** (`"three": "./vendor/three/three.module.min.js"`), o que pede **iOS 16.4 ou mais novo** |
 | Física e colisão | **Feita à mão** (sem biblioteca) | O jogo precisa só de cápsula do jogador × terreno, caixas e cilindros, e raios para os tiros. É simples, leve e previsível |
 | Interface (HUD, menus, diálogos) | **HTML + CSS por cima do canvas** | Botões de verdade (para a telemetria e a acessibilidade), texto nítido e fácil de mudar |
 | Som | **Web Audio** com sons **sintetizados por código** (tiros, passos, bichos) e música generativa por região | Sem arquivos de áudio de fora; leve |
@@ -111,6 +122,8 @@ src/
     textos.js           ← TODOS os textos em português, num só lugar
     regioes/            ← vale.js, floresta.js, desfiladeiro.js, ...
     missoes.js, dialogos.js, itens.js, receitas.js, criaturas.js
+ferramentas/
+  montar-site.mjs       ← cópia para o site com a versão nos endereços (ver 4.13)
 tests/
   logica/*.test.mjs     ← node --test
   fumaca.mjs            ← Playwright: abre o jogo deitado, toca, confere erros
@@ -145,7 +158,7 @@ export default {
 };
 ```
 
-**Interiores** (a nave por dentro, a base Horizonte, a estação K-7, os templos e as cavernas) são feitos de **blocos**, do jeito que os mapas do Quake eram feitos com "brushes": listas de caixas e rampas com textura. O código gera a malha, as caixas de colisão e a **luz pintada nos vértices** (luzes pontuais coloridas com teste de sombra por raio, calculado uma vez ao carregar).
+**Interiores** (a nave por dentro, a base Cruzeiro, a estação K-7, os templos e as cavernas) são feitos de **blocos**, do jeito que os mapas do Quake eram feitos com "brushes": listas de caixas e rampas com textura. O código gera a malha, as caixas de colisão e a **luz pintada nos vértices** (luzes pontuais coloridas com teste de sombra por raio, calculado uma vez ao carregar).
 
 ## 4.7 Modelos e animação por código
 
@@ -202,44 +215,60 @@ Só **estado do jogo**: números, sim/não e **códigos internos** (`fruta_lante
 - O jogo funciona **100% sem internet**.
 
 ### Na nuvem (para quem tem conta do queres.games)
-O jogo é só um conjunto de arquivos copiados para o site, então **não pode ter servidor próprio**. A parte de servidor fica no repositório do site (`deadnessus/queres-games`), que já roda no Cloudflare e já tem a conta de apelido (`/conta.js`). As regras do site dizem que "dados por jogador precisam de função no servidor do site", feita numa sessão daquele repositório (skill `login-queres-games` de lá).
+O jogo é só um conjunto de arquivos copiados para o site, então **não tem servidor próprio**. A parte de servidor fica no repositório do site (`deadnessus/queres-games`), seguindo o **padrão que o site já usa** para guardar dados por jogador. O exemplo mais parecido é o personagem do Infiltrados na Órbita: `functions/api/infiltrados/personagem.js` + `functions/_lib/infiltrados.js`, tabela `inf_personagens`, só números e nomes de uma lista fixa, nada de texto livre. Quem faz é uma sessão do `queres-games`, com a skill `login-queres-games` de lá.
 
-> **Atenção:** esta sessão não conseguiu abrir o repositório `queres-games` (permissão negada). A API abaixo é uma **proposta**; quem for fazer precisa conferir o que já existe lá (talvez já haja algo parecido para guardar dados por jogador) e adaptar.
-
-**Proposta de API genérica** (serve para **todos** os jogos do site, não só este):
+**Rotas** (no `queres-games`, em `functions/api/<slug>/saves.js`; regras em `functions/_lib/<slug>.js`):
 
 | Pedido | O que faz |
 |---|---|
-| `GET /api/saves/<jogo>` | Lista os espaços salvos da conta: `[{ slot, resumo: { dia, sistemas }, salvo_em }]` |
-| `GET /api/saves/<jogo>/<slot>` | Devolve um save |
-| `PUT /api/saves/<jogo>/<slot>` | Grava um save (corpo em JSON) |
-| `DELETE /api/saves/<jogo>/<slot>` | Apaga um save |
+| `GET /api/<slug>/saves` | Lista os espaços salvos da conta: `{ saves: [{ slot, resumo: { dia, sistemas, regiao }, salvo_em }] }` |
+| `GET /api/<slug>/saves?slot=1` | Devolve um save: `{ slot, save, salvo_em }` |
+| `POST /api/<slug>/saves` com `{ slot, save }` | Grava (ou troca) o save daquele espaço |
+| `POST /api/<slug>/saves` com `{ slot, apagar: true }` | Apaga o espaço |
 
-- **Quem é o jogador:** o cookie da conta do site (mesmo endereço, `credentials: 'same-origin'`). O jogo **não** guarda nem manda token nenhum.
-- **Onde guarda:** **Cloudflare D1** (banco SQL), uma tabela:
+Sem login: `401`. Sem banco: `503` (`semBanco()`). Save recusado: `400` com o motivo. Gravação cedo demais: `429`.
+
+**Como o servidor faz** (as peças já existem em `functions/_lib/conta.js`):
+- Quem é a pessoa: sempre `contaAtual(request, env)`, que lê o cookie `qg_sessao`. Nunca confiar em id ou apelido vindo do pedido. Se a sessão foi renovada, devolver o `set-cookie` (como o `comCookie` do Infiltrados).
+- `POST`: conferir `origemInvalida(request)` (só aceita JSON vindo do próprio site) e ler o corpo com `lerJson`.
+- Tabela com o **prefixo do jogo**, ligada a `contas.id`, criada com `CREATE TABLE IF NOT EXISTS` (como as outras tabelas do site). **Nunca mexer em `contas` nem `sessoes`.**
   ```sql
-  CREATE TABLE saves (
-    conta_id  TEXT NOT NULL,
-    jogo      TEXT NOT NULL,
-    slot      INTEGER NOT NULL CHECK (slot BETWEEN 1 AND 3),
-    versao    INTEGER NOT NULL,
-    dados     TEXT NOT NULL,          -- JSON validado, até 32 KB
-    salvo_em  INTEGER NOT NULL,
-    PRIMARY KEY (conta_id, jogo, slot)
-  );
+  CREATE TABLE IF NOT EXISTS nf_saves (
+    conta_id INTEGER NOT NULL,          -- contas.id
+    slot     INTEGER NOT NULL,          -- 1 a 3
+    versao   INTEGER NOT NULL,          -- versao_save
+    resumo   TEXT NOT NULL,             -- JSON pequeno: dia, sistemas, regiao (para a lista)
+    dados    TEXT NOT NULL,             -- o save validado, até 32 KB
+    salvo_em INTEGER NOT NULL,          -- relógio do servidor (segundos)
+    PRIMARY KEY (conta_id, slot)
+  ) WITHOUT ROWID;
   ```
-  Por que D1 e não KV: o KV demora um pouco para espalhar uma gravação pelo mundo, então quem salva no iPad e abre logo no iPhone poderia receber o save antigo; o D1 não tem esse problema. Os limites do D1 sobram para isso: até 2 MB por linha e 500 MB por banco no plano grátis ([limites do D1](https://developers.cloudflare.com/d1/platform/limits/)).
-- **Validação no servidor (protege as crianças):**
-  - até **32 KB**, JSON válido, `jogo` numa lista de jogos conhecidos, `slot` de 1 a 3;
+  `WITHOUT ROWID` e uma linha por espaço: cada gravação conta **1 linha** no limite diário do D1 (o site faz assim na telemetria).
+- **Validação** (`conferirSave` em `functions/_lib/<slug>.js`), que protege as crianças:
+  - até **32 KB**; `jogo` igual ao do jogo; `versao_save` inteiro conhecido; `slot` de 1 a 3;
+  - só as **chaves de primeiro nível conhecidas** (lista fixa, a mesma do `src/logica/save.js`);
   - **todo texto** precisa casar com `^[a-z0-9_:.-]{1,40}$` (só códigos, sem espaço). Assim é **impossível** guardar nome, frase ou qualquer texto livre, por construção;
-  - só números, sim/não, listas e objetos, com profundidade máxima de 6;
-  - limite de 1 gravação a cada 20 s por conta e jogo;
-  - sem conta → `401`, e o jogo segue só com o save do aparelho.
-- **Do lado do jogo** (`src/logica/save-nuvem.js`):
-  - Se `QGConta` não existir, a API responder 404 ou não houver conta → o botão de nuvem nem aparece (ou aparece "Entre com sua conta do queres.games para salvar na nuvem", usando `QGConta.entrar()`).
-  - Envia para a nuvem quando dorme, conserta um sistema ou troca de região (no máximo a cada 2 minutos), e sempre guarda no aparelho primeiro.
-  - **Conflito:** ao tocar em "Continuar", se a nuvem tiver um save mais novo que o do aparelho, mostra os dois resumos ("Este aparelho: Dia 9, 3 sistemas" × "Nuvem: Dia 12, 4 sistemas") e a criança escolhe.
-  - Sem internet: marca "pendente" e tenta de novo depois.
+  - só números finitos (entre −10⁹ e 10⁹), sim/não, listas (até 500 itens) e objetos, com profundidade máxima de 6;
+  - no máximo **1 gravação por minuto** por conta (`429` se vier antes).
+- Não precisa conferir "trapaça": não há ranking nem prêmio. O save é só da própria criança.
+- Plano grátis: pouco tempo de CPU por pedido, então a validação é um laço simples, sem nada pesado.
+
+**Do lado do jogo** (`src/logica/save-nuvem.js` + a tela de menu):
+- No `index.html`: `<script src="/conta.js?v=2"></script>` (caminho absoluto, aceito pelo verificador). Aberto fora do site, o arquivo não existe, `window.QGConta` fica indefinido e o jogo **esconde a nuvem** e segue só com o aparelho.
+- `const eu = window.QGConta ? await QGConta.me() : null` devolve `{ logado, apelido }` ou `null`:
+  - `null` (sem servidor) → nada de nuvem;
+  - `logado: false` → botão "Salvar na nuvem" abre o login **dentro do jogo** com `QGConta.montar(elemento, { aba: 'entrar', rotuloFechar: 'Voltar ao jogo', aoConcluir, aoFechar })`. É a mesma tela de login de todos os jogos do site; **não** fazer tela própria;
+  - `logado: true` → menu mostra "Salvando na nuvem como *Lobo Azul*"; `QGConta.perfil()` para ver a conta.
+- `QGConta.aoMudar(...)` atualiza o menu quando a pessoa entra ou sai. As cores da janela de login seguem o jogo pelas variáveis `--qgc-acento`, `--qgc-destaque`, `--qgc-fundo`, `--qgc-texto`, `--qgc-fonte`.
+- `fetch` com `credentials: 'same-origin'` e `content-type: application/json`.
+- **Quando envia** (econômico, porque o D1 grátis é dividido com o site todo): ao dormir, ao consertar um sistema, ao trocar de região e ao sair para o menu, **no máximo a cada 5 minutos**, e pelo botão "Salvar na nuvem agora" da pausa. Sempre grava no aparelho primeiro. Exemplo de conta: 20 crianças × 10 gravações por dia = 200 linhas, longe do limite de cerca de 100 mil.
+- **Conflito:** ao tocar em "Continuar", se a nuvem tiver um save mais novo que o do aparelho, mostra os dois resumos ("Este aparelho: Dia 9, 3 sistemas" × "Nuvem: Dia 12, 4 sistemas") e a criança escolhe.
+- Sem internet ou erro: marca "pendente" e tenta de novo na próxima ocasião. Nada trava o jogo.
+
+**Antes de juntar na `main` do site** (regras do `queres-games`): `npm run build` passando, teste local com `npx wrangler@4 pages dev dist --d1 DB=teste-local`, `CLAUDE.md` do site atualizado (rota e tabela `nf_saves`), post no blog explicando o que é guardado e **confirmação do dono**, porque é guardar dados de jogadores num site infantil.
+
+**Mais tarde, se outros jogos quiserem save na nuvem:** dá para transformar isso numa rota genérica do site (`/api/saves/<jogo>`). Por enquanto, seguimos o padrão atual (rota e tabela de cada jogo).
+
 - **Privacidade (LGPD):** a conta já é anônima (apelido gerado + código). O save não tem nada pessoal e não é misturado com a telemetria. Um nome que a criança dê ao personagem ou ao mascote (se a decisão D9 pedir) fica **só no aparelho** e é retirado antes de enviar.
 
 ## 4.10 Telemetria (proposta, só com aprovação do dono)
@@ -256,12 +285,17 @@ O site já mede sozinho sessões, tempo, erros, aparelhos e cliques em botões c
 | `chefe_vencido` | `chefe: rainha` | Se algum chefe está travando todo mundo |
 | `nave_decolou` | — | Quantos terminam |
 
-**Botões com `id` estáveis**, por exemplo: `btn-novo-jogo`, `btn-continuar`, `btn-atirar`, `btn-pular`, `btn-acao`, `btn-trocar-arma`, `btn-lanterna`, `btn-mochila`, `btn-mapa`, `btn-pausar`, `btn-salvar-nuvem`, `btn-dormir`; nas listas, `data-receita="gancho"`, `data-item="fruta_lanterna"`. Nunca texto digitado ou nome em `id` ou `data-...`.
+**Botões com `id` estáveis**, por exemplo: `btn-novo-jogo`, `btn-continuar`, `btn-atirar`, `btn-pular`, `btn-acao`, `btn-trocar-arma`, `btn-lanterna`, `btn-mochila`, `btn-mapa`, `btn-pausar`, `btn-salvar-nuvem`, `btn-dormir`. Nunca texto digitado ou nome em `id` ou `data-...`.
+
+Cuidados que vêm de como o site conta os botões:
+- O site guarda **no máximo 60 nomes de botão por jogo, dia e versão** (o resto vira `outros`). Então, nas listas (mochila, oficina, receitas), use **um nome por tipo de ação** (`data-acao="usar-item"`, `data-acao="fabricar"`), e não um nome diferente para cada item.
+- Botões criados por JavaScript só aparecem no painel depois de usados, e **gestos no canvas não são contados** (o joystick e o arrastar para olhar). Os botões de toque do HUD devem ser `<button>` de verdade, escritos no `index.html` sempre que possível.
+- O site guarda no máximo **100 combinações de evento e valor** por jogo e dia. Os eventos acima somam umas 30.
 
 ## 4.11 Testes
 
 - **Lógica** (`node --test tests/logica`): fome e frescor, receitas, inventário, missões, diálogos e a validação e migração do save. A pasta `src/logica/` não pode importar Three.js nem usar o DOM.
-- **Validador do save compartilhado:** a mesma regra de validação usada no servidor do site tem uma cópia nos testes, para garantir que nenhum save do jogo seria recusado.
+- **Validador do save compartilhado:** uma cópia da regra `conferirSave` do servidor do site fica nos testes, para garantir que nenhum save do jogo seria recusado. Se mudar de um lado, mude do outro.
 - **Teste de fumaça** (Playwright com o Chromium do ambiente): abre o jogo em tela de iPhone deitado (844 × 390, toque ligado) e de iPad (1180 × 820); confere que não há erro no console; simula o joystick e um tiro; tira uma captura de tela; lê o contador de desempenho do `?debug=1`.
 - **No aparelho de verdade:** o Safari do iPhone e do iPad usa o motor WebKit, não o Chromium. Por isso, a cada etapa, **o dono testa no iPad e no iPhone** (o mais importante: os controles estão gostosos? está liso?).
 - **Verificador do queres.games** antes de cada publicação.
@@ -276,3 +310,15 @@ O site já mede sozinho sessões, tempo, erros, aparelhos e cliques em botões c
 - Áudio: criar e "destravar" o `AudioContext` no primeiro toque; `suspend()` ao esconder a aba.
 - Sem vibração (o Safari do iPhone não tem `navigator.vibrate`).
 - Voz da ÍRIS (opcional, decisão D13): `speechSynthesis` com voz pt-BR do próprio aparelho, sem enviar nada para fora.
+
+## 4.13 Como o jogo vai para o site (publicação e cache)
+
+- Quem publica é uma sessão do `queres-games` (skill `publicar-no-queres-games`). Ela copia **só o que o jogo usa** para `public/jogar/<slug>/` (nada de `docs/`, `tests/`, `ferramentas/`) e grava o `versao.json` com o commit.
+- Para isso ficar simples e sem erro, este repositório terá um script **`ferramentas/montar-site.mjs <pasta-de-destino>`** que:
+  1. copia `index.html`, `style.css`, `src/` e `vendor/three/` (só os arquivos usados);
+  2. coloca a **versão (commit curto) no endereço** de cada arquivo: `style.css?v=<commit>`, `src/main.js?v=<commit>` e, no **import map**, uma linha para cada módulo de `src/` (`"./src/mundo/terreno.js": "./src/mundo/terreno.js?v=<commit>"`). Os `import` entre módulos (`'./terreno.js'`) passam pelo import map e também pegam a versão nova. É o mesmo método do `scripts/atualizar-bento-city.mjs` do site, que resolveu o problema do cache de 4 horas;
+  3. avisa se sobrou algum endereço externo.
+- A sessão do site roda: `node <jogo>/ferramentas/montar-site.mjs public/jogar/<slug>`, depois `node scripts/gravar-versao.mjs <slug> <pasta-do-jogo> --origem deadnessus/Jojo-4` e o verificador na cópia.
+- Enquanto programa aqui, o jogo roda direto da raiz do repositório (sem versão nos endereços), com um servidor local simples (`python3 -m http.server`).
+- `qg-eventos.json` fica na raiz deste repositório; a lista só vale depois da próxima publicação.
+

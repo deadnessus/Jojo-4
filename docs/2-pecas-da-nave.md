@@ -26,7 +26,7 @@ Na nave há um **Painel de Conserto**: um desenho da Andorinha com os 8 sistemas
 | 3 | 🔥 **Motor principal** | Empurra a nave | **Bocal do motor** (o "sino" atrás do motor) | Ninho da Rainha Zumbidora, Floresta | O motor joga gás quente para trás e a nave vai para a frente: é a **ação e reação** (3ª lei de Newton). O bocal em forma de sino direciona o gás |
 | 4 | ⛽ **Combustível** | Sem combustível, o motor não liga | **Eletrolisador** + água | Estação K-7, Terras Quentes | Com eletricidade dá para separar a **água** em **hidrogênio** e **oxigênio**, que são combustível de foguete (o ônibus espacial voava com hidrogênio e oxigênio líquidos). Usar o que existe no lugar tem nome: **ISRU**. O robô Perseverance já fez oxigênio em Marte com o aparelho MOXIE ([NASA](https://science.nasa.gov/blog/a-day-full-of-moxie/)) |
 | 5 | 🧭 **Navegação** | Saber para onde apontar | **Rastreador de estrelas**, que precisa ser calibrado | Observatório dos Picos Gelados | É uma câmera que reconhece os "desenhos" das estrelas, como os navegadores antigos faziam olhando o céu. Minijogo: alinhar constelações à noite |
-| 6 | 📡 **Comunicação** | Falar com a Terra | **Antena** + 3 fusíveis | Base da Expedição Horizonte, Desfiladeiro | O rádio de verdade viaja na velocidade da luz e, mesmo assim, de outra estrela levaria **anos**. Aqui o jogo inventa um "rádio de salto" (e a ÍRIS avisa que isso é invenção) |
+| 6 | 📡 **Comunicação** | Falar com a Terra | **Antena** + 3 fusíveis | Base da Expedição Cruzeiro, Desfiladeiro | O rádio de verdade viaja na velocidade da luz e, mesmo assim, de outra estrela levaria **anos**. Aqui o jogo inventa um "rádio de salto" (e a ÍRIS avisa que isso é invenção) |
 | 7 | 🫁 **Suporte de vida** | No espaço não tem ar: é preciso fabricar oxigênio e tirar o gás carbônico | **Biofiltro com musgo-de-ar** | Horta do Ulo, Floresta | As plantas fazem oxigênio com a luz (**fotossíntese**). Na Estação Espacial, o oxigênio vem da água separada com eletricidade |
 | 8 | 🌀 **Motor de salto** (ficção) | Viajar entre estrelas | **Cristal de Salto** | Cavernas de Cristal (final) | A única peça totalmente inventada. A ÍRIS brinca: "Isto aqui nem os cientistas da Terra entendem direito" |
 
@@ -39,8 +39,8 @@ Para escapar da gravidade da Terra, um foguete precisa chegar a **11 km por segu
 
 | Material | Onde achar | Para que serve |
 |---|---|---|
-| **Sucata** | Destroços da Andorinha, robôs derrotados, base Horizonte | Remendos, armas, melhorias da base |
-| **Fios e componentes** | Nave, base Horizonte, estação K-7 | Consertos elétricos, scanner, armadilhas |
+| **Sucata** | Destroços da Andorinha, robôs derrotados, base Cruzeiro | Remendos, armas, melhorias da base |
+| **Fios e componentes** | Nave, base Cruzeiro, estação K-7 | Consertos elétricos, scanner, armadilhas |
 | **Fibra** | Plantas da Floresta | Corda, gancho, vara de pesca, roupas |
 | **Resina** | Árvore-âmbar (com a ajuda do Ulo) | Selar o casco, colas, tochas |
 | **Cristal pequeno** | Cavernas, Picos, meteoritos | Lanterna forte, munição especial |

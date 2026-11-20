@@ -33,7 +33,8 @@ O maior risco de um jogo de tiro em primeira pessoa no toque é o **controle ser
 - Dormir e salvar; save no aparelho com 3 espaços; desmaio; 3 dificuldades.
 - Sons e música do Vale.
 - **Pronto quando:** cerca de 20 minutos de jogo do começo até a bateria, sem travar, e uma criança consegue jogar sem ajuda.
-- **Publicar no queres.games** para o Jojô e o Bento testarem.
+- Script `ferramentas/montar-site.mjs` (cópia para o site com a versão nos endereços, ver 4.13).
+- **Publicar no queres.games** para o Jojô e o Bento testarem (pedir numa sessão do repositório `queres-games`).
 
 ### Etapa 2: Floresta Lumina (2 a 3 sessões)
 - Região nova; o Ulo, o tradutor e os diálogos com escolhas; o Bolota.
@@ -42,12 +43,12 @@ O maior risco de um jogo de tiro em primeira pessoa no toque é o **controle ser
 - Bocal do motor e musgo-de-ar (2 sistemas); placas do escudo; registros 2 a 4.
 
 ### Etapa 3: salvar na nuvem (1 sessão aqui + 1 sessão no repositório `queres-games`)
-- Lá: a API `/api/saves/...` com D1 e validação (ver 4.9).
-- Aqui: `save-nuvem.js`, botão "Salvar na nuvem", tela de conflito, testes.
+- Aqui: `save-nuvem.js`, `/conta.js` no `index.html`, botão "Salvar na nuvem", login dentro do jogo com `QGConta.montar`, tela de conflito, testes (com um servidor de mentira que imita as rotas).
+- Lá (sessão do `queres-games` com permissão de escrita, skill `login-queres-games`): `functions/api/<slug>/saves.js`, `functions/_lib/<slug>.js` com `conferirSave`, tabela `nf_saves`, teste local com `wrangler`, `CLAUDE.md` do site e post no blog. **O dono confirma antes do merge** (é guardar dados de jogadores num site infantil).
 - Pode vir antes ou depois, conforme a decisão D14.
 
 ### Etapa 4: Desfiladeiro dos Ventos (2 sessões)
-- Gancho; a base da Expedição Horizonte (interior em blocos); os 3 fusíveis e a antena.
+- Gancho; a base da Expedição Cruzeiro (interior em blocos); os 3 fusíveis e a antena.
 - **Contato com a Terra** (a virada da história).
 - Casco-de-Pedra e o **Grande Casco**; botas térmicas; atordoador; 1º templo da Chave dos Antigos.
 

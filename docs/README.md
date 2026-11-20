@@ -16,6 +16,9 @@
 - **Salvar:** sempre no aparelho. Na **nuvem (Cloudflare)** para quem tem conta do queres.games, assim dá para começar no iPad e continuar no iPhone.
 - **Sem online** por enquanto.
 
+## O que já foi conferido no queres.games
+O repositório do site (`deadnessus/queres-games`) foi lido: como os jogos são copiados para o site, a conta de apelido (`/conta.js`), as funções do Cloudflare com o banco D1, a telemetria, o cache de 4 horas dos arquivos e os outros jogos 3D (Ilha Selvagem, Fúria, Bento City). O plano segue o que já existe lá: o save na nuvem copia o jeito que o Infiltrados na Órbita guarda o personagem na conta, e a publicação copia o jeito do Bento City de evitar arquivos velhos no cache.
+
 ## Os documentos
 
 | # | Documento | O que tem |

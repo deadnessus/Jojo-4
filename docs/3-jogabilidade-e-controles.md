@@ -69,7 +69,7 @@ Inspiração Quake 2 (armas diferentes para situações diferentes), mas com car
 |---|---|---|
 | **Desintegrador** | Tiro de energia, recarrega sozinho, superaquece | Com o esqueleto do Tavares (Ato 1) |
 | **Chave-laser** | Ferramenta de perto: corta cipó, abre caixas, golpe corpo a corpo | Kit da nave |
-| **Atordoador** | Anel elétrico que paralisa bichos grandes e robôs por alguns segundos | Base Horizonte |
+| **Atordoador** | Anel elétrico que paralisa bichos grandes e robôs por alguns segundos | Base Cruzeiro |
 | **Dispersor** | Rajada de curta distância (tipo espingarda), usa células de energia | Fabricado na oficina |
 | **Lança-luz** | Granada de luz que espanta bichos (muito boa contra Rastejadores e Planadores) | Fabricada (cristal pequeno) |
 | **Rifle de raio** | Tiro carregado de longe, forte contra chefes e robôs | Estação K-7 |
@@ -87,7 +87,7 @@ Como em jogos de exploração clássicos, cada equipamento novo abre uma parte d
 | Lanterna forte | Cavernas escuras, afasta Planadores | Bateria instalada |
 | Scanner | Mostra itens, comida boa ou ruim, fraquezas | Bateria instalada |
 | Gancho | Paredões do Desfiladeiro | Fabricado com fibra |
-| Botas térmicas | Chão quente das Terras Quentes | Base Horizonte |
+| Botas térmicas | Chão quente das Terras Quentes | Base Cruzeiro |
 | Traje térmico | Frio dos Picos Gelados | Fabricado com isolante da K-7 |
 | Mochila-jato | Pulos longos (a gravidade baixa ajuda) | Fabricada com metal raro (opcional, facilita) |
 | Chave dos Antigos | Cavernas de Cristal | 3 templos |
@@ -155,3 +155,12 @@ Dá para trocar o modo a qualquer momento no menu de pausa.
 
 - **Primeira versão jogável** (Vale da Queda): cerca de 20 minutos.
 - **Jogo completo:** de 3 a 5 horas, em sessões de 20 a 40 minutos (o jogo salva sozinho com frequência).
+
+## 3.13 Lições dos outros jogos do queres.games
+
+O Jojô e o Bento já fizeram jogos parecidos em partes. O que aprendemos com eles (pelo blog e pelo código do site):
+
+- **A Ilha Misteriosa** (sobrevivência): o começo estava **difícil demais** e foi preciso pôr mais comida e água nos destroços. Depois os tempos foram encurtados ("menos espera, mais ação"), e dormir passou a ter custo quando se está com fome. **Para nós:** kit de emergência generoso, primeira meia hora gentil, nada de ficar esperando (a horta e o tanque de combustível enchem **enquanto você explora**), e dormir não pode ser um jeito de fugir da fome.
+- **O Fúria** (do Bento) já tem tiro em **primeira pessoa no tablet**, com joystick à esquerda e botões à direita, e o botão **ATIRAR também serve para mirar** ao arrastar o dedo. Ou seja, as crianças já conhecem esse jeito de jogar, e o nosso controle segue a mesma ideia.
+- **A Ilha Selvagem** (3D, construir e animais) e o **Bento City** (até vai à Lua de foguete) mostram que as crianças gostam de mundo 3D para explorar e de espaço. **Para nós:** o diferencial é a **história** (mistério, Ulo, voltar para casa) e o planeta alienígena.
+- **A Invasão Estelar** já tem naves alienígenas. Por isso o nome deste jogo não deveria parecer com "Invasão Estelar" (ver a decisão D1).
