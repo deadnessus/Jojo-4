@@ -195,7 +195,9 @@ async function testarColeta(page, toque, conferir, nome) {
   // vai até a árvore mais perto e mira no tronco
   await page.evaluate(() => {
     const r = window.__rumo, j = r.jogador;
-    const arvores = r.recursos.lista.filter((x) => x.tipo === 'arvore' && x.estado === 'inteiro');
+    // árvore em terra firme e sem pedra ou cristal do lado (senão a mira pega a pedra)
+    const sozinha = (a) => !r.recursos.lista.some((o) => o !== a && Math.hypot(o.x - a.x, o.z - a.z) < 3.5);
+    const arvores = r.recursos.lista.filter((x) => x.tipo === 'arvore' && x.estado === 'inteiro' && x.y > 1.5 && r.grade.alturaEm(x.x + 1.6, x.z) > 1.5 && sozinha(x));
     arvores.sort((a, b) => Math.hypot(a.x - j.pos.x, a.z - j.pos.z) - Math.hypot(b.x - j.pos.x, b.z - j.pos.z));
     const a = arvores[0];
     window.__arvore = a;
@@ -295,8 +297,8 @@ async function testarColeta(page, toque, conferir, nome) {
   await page.waitForFunction(() => window.__rumo.estado === 'jogando', null, { timeout: 8000 });
 }
 
-// Missões: falar com a ÍRIS, ir até a colina, derrotar os Rastejadores, pegar e instalar a bateria; os chefes;
-// a porta das Ruínas; decolar, o final e voltar a explorar; e o progresso guardado no aparelho.
+// Missões: falar com a ÍRIS, ir até a colina, vencer o Rei Rastejador, pegar e instalar a bateria; os chefes;
+// a porta das Ruínas; o vulcão e a lava; os segredos; decolar, o final e voltar a explorar; e o progresso guardado.
 async function testarMissoes(page, toque, conferir, nome) {
   console.log('-- missões');
   const centro = async (sel) => { const l = page.locator(sel); await l.scrollIntoViewIfNeeded(); const b = await l.boundingBox(); return [b.x + b.width / 2, b.y + b.height / 2]; };
@@ -314,16 +316,16 @@ async function testarMissoes(page, toque, conferir, nome) {
   const estrela = await page.evaluate(() => { const a = window.__rumo.alvoMissao(); return a && Math.round(a.x) === 104 && Math.round(a.z) === 46; });
   conferir(estrela, 'a ⭐ da bússola aponta para a Colina da Bateria');
 
-  // 2. chegar na colina: aparecem 4 Rastejadores do ninho
+  // 2. chegar na colina: aparece o Rei Rastejador (o chefe que guarda a bateria)
   await irPara(104, 62);
   await esperar(500);
   const tag = await page.evaluate(() => window.__rumo.missoes.tag());
-  const bichos = await page.evaluate((t) => window.__rumo.criaturas.lista.filter((c) => c.tag === t).length, tag);
-  conferir((await passo()).tipo === 'derrotar' && bichos === 4, `chegando na colina, saem ${bichos} Rastejadores do ninho`);
+  const chefe = await page.evaluate((t) => { const c = window.__rumo.criaturas.lista.find((x) => x.tag === t); return c && c.tipo; }, tag);
+  conferir((await passo()).tipo === 'chefe' && chefe === 'reiRastejador', `chegando na colina, aparece o chefe (${chefe})`);
   await page.screenshot({ path: join(pastaCapturas, `${nome}-missao-colina.png`) });
-  await page.evaluate((t) => { const r = window.__rumo; for (const c of r.criaturas.lista.filter((x) => x.tag === t)) r.criaturas.acertar(c, 99); }, tag);
+  await page.evaluate((t) => { const r = window.__rumo; for (const c of r.criaturas.lista.filter((x) => x.tag === t || x.tag === 'ajudante')) r.criaturas.acertar(c, 99); }, tag);
   await esperar(1600);
-  conferir((await passo()).tipo === 'pegar', 'derrotando os 4, a bateria aparece');
+  conferir((await passo()).tipo === 'pegar', 'vencendo o Rei Rastejador, a bateria aparece');
 
   // 3. pegar a bateria (chegando perto, o botão vira "Pegar")
   const pc = await page.evaluate(() => { const p = window.__rumo.pecas.lista.find((x) => x.item === 'bateria'); return p && { x: p.x, z: p.z, item: p.item }; });
@@ -343,15 +345,12 @@ async function testarMissoes(page, toque, conferir, nome) {
   await page.screenshot({ path: join(pastaCapturas, `${nome}-painel.png`) });
   await tocar('#btn-instalar');
   const r1 = await page.evaluate(() => ({ energia: window.__rumo.missoes.estado.sistemas.energia, missao: window.__rumo.missoes.missao().id, estado: window.__rumo.estado }));
-  conferir(r1.energia === 1 && r1.missao === 'casco' && r1.estado === 'jogando', 'instalar a bateria: Energia consertada e começa a Missão 2');
+  conferir(r1.energia === 1 && r1.missao === 'bocal' && r1.estado === 'jogando', 'instalar a bateria: Energia consertada e começa a Missão 2');
 
-  // 5. aba Missões e receita nova
+  // 5. aba Missões (com os segredos)
   await tocar('#btn-missao');
   const textoMissoes = await page.locator('#painel-missoes').textContent();
-  await tocar('#aba-criar');
-  const temRemendo = await page.locator('[data-receita="remendo"]').count();
-  const semEletro = await page.locator('[data-receita="eletrolisador"]').count();
-  conferir(textoMissoes.includes('Remendar o casco') && textoMissoes.includes('???') && temRemendo === 1 && semEletro === 0, 'a aba 📜 Missões mostra a campanha e as receitas novas aparecem na hora certa');
+  conferir(textoMissoes.includes('O bocal do motor') && textoMissoes.includes('???') && textoMissoes.includes('Segredos achados: 0 de'), 'a aba 📜 Missões mostra a campanha e os segredos');
   await tocar('#btn-fechar-mochila');
 
   // 6. chefes: a Rainha (barra de vida) e o Guardião (joga cristais)
@@ -372,13 +371,59 @@ async function testarMissoes(page, toque, conferir, nome) {
   conferir(vidaDepois < vidaAntes, `o Guardião de Cristal joga cristais que tiram vida (${Math.round(vidaAntes)} → ${Math.round(vidaDepois)})`);
   await page.evaluate(() => { const r = window.__rumo; for (const c of r.criaturas.lista.filter((x) => x.tag === 'teste2')) r.criaturas.acertar(c, 99); r.levarDano(-100); });
   await esperar(1500);
+  // o Saltitão pula em cima de você
+  const v1 = await page.evaluate(() => { const r = window.__rumo; r.jogador.reposicionar(-205, 100, 0); r.criaturas.invocar('saltitao', -205, 110, 'teste3'); return r.vida; });
+  await esperar(4000);
+  const v2 = await page.evaluate(() => window.__rumo.vida);
+  conferir(v2 < v1, `o Saltitão pula e amassa o chão onde você está (${Math.round(v1)} → ${Math.round(v2)})`);
+  await page.evaluate(() => { const r = window.__rumo; for (const c of r.criaturas.lista.filter((x) => x.tag === 'teste3')) r.criaturas.acertar(c, 99); r.levarDano(-100); });
+  await esperar(1500);
+
+  // 6b. o Vulcão: a lava tira vida, e o Gigante de Magma joga bolas de fogo
+  const lava = await page.evaluate(() => { const r = window.__rumo, rio = r.locais.lava.rios[0].pontos; const [x, z] = rio[1]; r.jogador.reposicionar(x, z, 0); return r.vida; });
+  await esperar(1500);
+  const depoisLava = await page.evaluate(() => window.__rumo.vida);
+  conferir(depoisLava < lava, `pisar na lava do Vulcão tira vida (${Math.round(lava)} → ${Math.round(depoisLava)})`);
+  await page.evaluate(() => { const r = window.__rumo; r.jogador.reposicionar(-30, 118, 180); r.levarDano(-100); });
+  await esperar(800);
+  await page.screenshot({ path: join(pastaCapturas, `${nome}-vulcao.png`) });
+
+  // 6c. segredos: o gravador da Base, o Coração do Vulcão (vida máxima 150) e os monólitos
+  const sg = await page.evaluate(() => { const r = window.__rumo, p = r.segredos.pontos.find((x) => x.id === 'gravador2'); r.jogador.reposicionar(p.x + 1, p.z, 0); return r.segredos.quantos; });
+  await esperar(500);
+  const textoSegredo = await page.locator('#btn-acao-texto').textContent();
+  await tocar('#btn-acao');
+  const sg2 = await page.evaluate(() => window.__rumo.segredos.quantos);
+  conferir(textoSegredo === 'Ouvir o gravador 🎙️' && sg2 === sg + 1, `achar um segredo: "${textoSegredo}" (${sg2} de ${await page.evaluate(() => window.__rumo.segredos.total)})`);
+  await page.evaluate(() => { const r = window.__rumo, p = r.segredos.pontos.find((x) => x.id === 'coracao'); r.jogador.reposicionar(p.x + 1, p.z, 0); });
+  await esperar(500);
+  await tocar('#btn-acao');
+  await esperar(300);
+  const coracao = await page.evaluate(() => ({ tem: window.__rumo.inventario.quantos('coracao'), vida: window.__rumo.vida }));
+  conferir(coracao.tem === 1 && coracao.vida === 150, 'o Coração do Vulcão (no alto do Vulcão) deixa a vida máxima em 150');
+  for (const id of ['monolito1', 'monolito2', 'monolito3']) {
+    await page.evaluate((id) => { const r = window.__rumo, p = r.segredos.pontos.find((x) => x.id === id); r.jogador.reposicionar(p.x + 0.5, p.z, 0); }, id);
+    await esperar(400);
+    await tocar('#btn-acao');
+  }
+  const mono = await page.evaluate(() => ({ achou: window.__rumo.segredos.achou('monolitos'), pedra: window.__rumo.inventario.quantos('pedra_antiga') }));
+  conferir(mono.achou && mono.pedra === 1, 'tocar nos três monólitos abre um segredo (Pedra dos Antigos)');
+  await page.screenshot({ path: join(pastaCapturas, `${nome}-monolito.png`) });
+  // o telescópio do Observatório: minijogo das estrelas
+  await page.evaluate(() => { const r = window.__rumo, p = r.segredos.pontos.find((x) => x.id === 'telescopio'); r.jogador.reposicionar(p.x + 1, p.z, 0); });
+  await esperar(500);
+  await tocar('#btn-acao');
+  conferir(await page.locator('#minijogo').isVisible(), 'o telescópio do Observatório abre o minijogo das estrelas');
+  for (const id of ['gacrux', 'acrux', 'mimosa', 'delta', 'epsilon']) await page.evaluate((id) => document.querySelector(`[data-estrela="${id}"]`).click(), id);
+  await esperar(1600);
+  const tele = await page.evaluate(() => ({ achou: window.__rumo.segredos.achou('telescopio'), estado: window.__rumo.estado }));
+  conferir(tele.achou && tele.estado === 'jogando', 'achando o Cruzeiro do Sul, o segredo do telescópio se abre');
 
   // 7. a porta das Ruínas abre com as 3 pedras-chave e o Guardião aparece lá dentro
   await page.evaluate(() => {
     const r = window.__rumo, e = r.missoes.estado;
-    e.m = 10; e.p = 2; e.n = 0;
+    e.m = 5; e.p = 1; e.n = 0;
     r.prepararPasso();
-    r.inventario.adicionar('chave', 3);
     const f = r.locais.portaFrente;
     r.jogador.reposicionar(f.x, f.z - 1, 0);
   });
@@ -387,7 +432,7 @@ async function testarMissoes(page, toque, conferir, nome) {
   await tocar('#btn-acao');
   await esperar(300);
   const r2 = await page.evaluate(() => ({ porta: window.__rumo.missoes.estado.porta, tipo: window.__rumo.missoes.passo().tipo, chefe: window.__rumo.criaturas.lista.some((c) => c.tipo === 'guardiao' && c.tag) }));
-  conferir(textoPorta === 'Abrir a porta 🗝️' && r2.porta && r2.tipo === 'chefe' && r2.chefe, 'as 3 pedras-chave abrem a porta das Ruínas e o Guardião acorda');
+  conferir(textoPorta === 'Abrir a porta' && r2.porta && r2.tipo === 'chefe' && r2.chefe, 'na missão do Cristal de Salto, a porta das Ruínas abre e o Guardião acorda');
   await page.evaluate(() => { const r = window.__rumo; r.jogador.reposicionar(-130, 228, 0); });
   await esperar(500);
   await page.screenshot({ path: join(pastaCapturas, `${nome}-ruinas.png`) });
@@ -395,13 +440,13 @@ async function testarMissoes(page, toque, conferir, nome) {
   // 8. o progresso das missões fica guardado
   await page.evaluate(() => window.__rumo.salvarAgora());
   const salvo = await page.evaluate(() => JSON.parse(localStorage.getItem('rumo-a-terra:save:1') || '{}'));
-  conferir(salvo.versao_save === 3 && salvo.missao && salvo.missao.m === 10 && salvo.missao.porta === true, 'o progresso das missões fica guardado no aparelho (versão 3)');
+  conferir(salvo.versao_save === 3 && salvo.missao && salvo.missao.m === 5 && salvo.missao.porta === true && salvo.segredos.length >= 6, 'o progresso das missões e os segredos ficam guardados no aparelho');
 
   // 9. decolar, o final e voltar a explorar
   await page.evaluate(() => {
     const r = window.__rumo, e = r.missoes.estado;
     r.criaturas.limparMissao();
-    e.m = 11; e.p = 0; e.n = 0;
+    e.m = 6; e.p = 0; e.n = 0;
     for (const s of Object.keys(e.sistemas)) e.sistemas[s] = 2;
     r.nave.mostrarSistemas(e.sistemas);
     const p = r.nave.porta; r.jogador.reposicionar(p.x, p.z, 0);

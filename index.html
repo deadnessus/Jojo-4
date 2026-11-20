@@ -14,7 +14,7 @@
 </script>
 </head>
 <body>
-<!-- Rumo à Terra, jogo do Jojô para o queres.games: consertar a Andorinha em 12 missões e voltar para a Terra.
+<!-- Rumo à Terra, jogo do Jojô para o queres.games: consertar a Andorinha em 7 missões (cada peça com um chefe) e voltar para a Terra.
      Plano completo em docs/README.md. Botões com id fixo: a telemetria do site conta os toques pelo id. -->
 <canvas id="tela3d" aria-label="Mundo do jogo"></canvas>
 
@@ -70,7 +70,7 @@
       <button id="btn-confirmar-novo" class="grande perigo" type="button">Sim, começar de novo</button>
       <button id="btn-cancelar-novo" type="button">Voltar</button>
     </div>
-    <p class="nota">Em desenvolvimento: 12 missões para consertar a Andorinha e voltar para a Terra.</p>
+    <p class="nota">Em desenvolvimento: 7 missões para consertar a Andorinha (cada peça tem um alien gigante) e segredos para achar.</p>
   </div>
 </section>
 
@@ -139,7 +139,7 @@
 <section id="tela-painel" class="tela" hidden>
   <div class="cartao painel">
     <div class="topo-mapa">
-      <h2>Painel da Andorinha</h2>
+      <h2 id="painel-titulo">Painel da Andorinha</h2>
       <button id="btn-fechar-painel" type="button" aria-label="Voltar ao jogo">✕</button>
     </div>
     <div id="painel-conteudo">

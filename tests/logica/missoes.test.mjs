@@ -2,96 +2,94 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { criarMissoes } from '../../src/logica/missoes.js';
 import { criarInventario } from '../../src/logica/inventario.js';
-import { MISSOES, SISTEMAS } from '../../src/dados/missoes.js';
-import { LOCAIS, PONTOS } from '../../src/dados/locais.js';
+import { MISSOES, SISTEMAS, VERSAO_CAMPANHA } from '../../src/dados/missoes.js';
+import { LOCAIS, PONTOS, SEGREDOS, PECAS_NO_LOCAL, CHEFE_NO_LOCAL } from '../../src/dados/locais.js';
 import { ITENS } from '../../src/dados/itens.js';
 import { CRIATURAS } from '../../src/dados/criaturas.js';
 import { montarSave, validarSave } from '../../src/logica/save.js';
 
 const ctx = (local = null, fogueira = false) => ({ pertoDe: (l) => l === local, fogueiraPertoDaNave: fogueira });
 
-test('a campanha é grande e todos os dados existem', () => {
+test('a campanha é curta e cada peça tem um chefe', () => {
   const passos = MISSOES.reduce((s, m) => s + m.passos.length, 0);
-  assert.ok(MISSOES.length >= 12 && passos >= 45, `${MISSOES.length} missões, ${passos} passos`);
+  assert.ok(MISSOES.length <= 8 && passos <= 32, `${MISSOES.length} missões, ${passos} passos`);
   for (const m of MISSOES) {
     if (m.sistema) assert.ok(SISTEMAS.some((s) => s.id === m.sistema), m.id);
+    const pega = m.passos.findIndex((p) => p.tipo === 'pegar');
+    if (pega >= 0) {
+      const chefe = m.passos.slice(0, pega).find((p) => p.tipo === 'chefe');
+      assert.ok(chefe, `${m.id}: tem um chefe antes de pegar a peça`);
+      assert.ok(CRIATURAS[chefe.chefe] && CRIATURAS[chefe.chefe].chefe, `${m.id}: chefe ${chefe.chefe}`);
+      assert.ok(CHEFE_NO_LOCAL[chefe.chefe], `${m.id}: onde o chefe aparece`);
+      assert.ok(PECAS_NO_LOCAL[m.passos[pega].item], `${m.id}: onde a peça aparece`);
+    }
     for (const p of m.passos) {
       if (p.local) assert.ok(LOCAIS[p.local], `${m.id}: local ${p.local}`);
       if (p.item) assert.ok(ITENS[p.item], `${m.id}: item ${p.item}`);
       if (p.tipo === 'achar') assert.ok(PONTOS[p.item], `${m.id}: pontos de ${p.item}`);
-      if (p.bicho) assert.ok(CRIATURAS[p.bicho], `${m.id}: bicho ${p.bicho}`);
-      if (p.chefe) assert.ok(CRIATURAS[p.chefe] && CRIATURAS[p.chefe].chefe, `${m.id}: chefe ${p.chefe}`);
       for (const id of Object.keys(p.itens || p.precisa || {})) assert.ok(ITENS[id], `${m.id}: ${id}`);
       assert.ok(p.texto && p.texto.length < 140, `${m.id}: texto curto`);
     }
   }
+  const chefes = new Set(MISSOES.flatMap((m) => m.passos.filter((p) => p.tipo === 'chefe').map((p) => p.chefe)));
+  assert.equal(chefes.size, 6, 'seis chefes diferentes');
 });
 
-test('primeira missão: falar, ir, derrotar, pegar e instalar', () => {
+test('dá para jogar a campanha inteira, do começo ao fim', () => {
   const inv = criarInventario();
   const ms = criarMissoes(null, inv);
-  assert.equal(ms.passo().tipo, 'falar');
-  assert.ok(ms.evento('falou').length > 0);
-  assert.equal(ms.verificar(0.1, ctx()).length, 0, 'longe da colina não avança');
-  ms.verificar(0.1, ctx('colina'));
-  assert.equal(ms.passo().tipo, 'derrotar');
-  const tag = ms.tag();
-  for (let i = 0; i < 3; i++) ms.evento('derrotou', { tag });
-  ms.evento('derrotou', { tag: 'outro:9' });
-  assert.equal(ms.progresso(), '3/4');
-  ms.evento('derrotou', { tag });
-  assert.equal(ms.passo().tipo, 'pegar');
-  ms.evento('pegou', { id: 'bateria' });
-  inv.adicionar('bateria', 1);
-  assert.equal(ms.podeInstalar().ok, true);
-  const msgs = ms.instalar();
-  assert.ok(msgs.some((m) => m.includes('Missão completa')));
-  assert.equal(inv.quantos('bateria'), 0, 'instalar gasta a peça');
-  assert.equal(ms.estado.sistemas.energia, 1);
-  assert.equal(ms.missao().id, 'casco');
+  let voltas = 0;
+  while (!ms.fim && voltas++ < 100) {
+    const ps = ms.passo();
+    if (ps.tipo === 'falar') ms.evento('falou');
+    else if (ps.tipo === 'ir') ms.verificar(0.1, ctx(ps.local));
+    else if (ps.tipo === 'chefe') ms.evento('derrotou', { tag: ms.tag() });
+    else if (ps.tipo === 'pegar') { inv.adicionar(ps.item, 1); ms.evento('pegou', { id: ps.item }); }
+    else if (ps.tipo === 'instalar') assert.ok(ms.instalar(), `instalar ${ms.missao().id}`);
+    else if (ps.tipo === 'abrir') ms.evento('abriu');
+    else if (ps.tipo === 'decolar') ms.evento('decolou');
+    else assert.fail(`passo inesperado: ${ps.tipo}`);
+  }
+  assert.ok(ms.fim, 'chegou ao fim');
+  for (const s of SISTEMAS) assert.equal(ms.estado.sistemas[s.id], s.etapas, s.id);
+  assert.equal(ms.estado.porta, true);
 });
 
-test('coletar, criar, achar e esperar o tanque', () => {
-  const inv = criarInventario([['madeira', 24], ['pedra', 18], ['fibra', 8]]);
-  const ms = criarMissoes({ m: 1, p: 0, n: 0, pegos: [], sistemas: [['energia', 1]], combustivel: 0, porta: false }, inv);
-  ms.verificar(0.1, ctx());
-  assert.equal(ms.passo().tipo, 'criar');
-  inv.adicionar('remendo', 4);
-  ms.verificar(0.1, ctx());
-  assert.equal(ms.passo().tipo, 'instalar');
-  ms.instalar();
-  ms.verificar(0.1, ctx(null, true));
-  assert.equal(ms.missao().id, 'bocal');
-
-  const escudo = criarMissoes({ m: MISSOES.findIndex((m) => m.id === 'escudo'), p: 0, n: 0, pegos: [], sistemas: [], combustivel: 0, porta: false }, inv);
-  escudo.evento('pegou', { id: 'placa:0' });
-  escudo.evento('pegou', { id: 'placa:0' });
-  assert.equal(escudo.progresso(), '🟧 1/6', 'a mesma placa não conta duas vezes');
-  for (let i = 1; i < 6; i++) escudo.evento('pegou', { id: `placa:${i}` });
-  assert.equal(escudo.passo().tipo, 'instalar');
-
-  const comb = criarMissoes({ m: MISSOES.findIndex((m) => m.id === 'combustivel'), p: 3, n: 0, pegos: [], sistemas: [['combustivel', 1]], combustivel: 0, porta: false }, inv);
-  assert.equal(comb.passo().tipo, 'esperar');
-  for (let i = 0; i < 100; i++) comb.verificar(1, ctx());
-  assert.equal(comb.passo().tipo, 'esperar', 'demora para encher');
-  for (let i = 0; i < 300; i++) comb.verificar(1, ctx());
-  assert.equal(comb.missao().id, 'navegacao');
-});
-
-test('receitas das missões só aparecem quando a missão chega', () => {
+test('o chefe certo é que conta (bichos de outros passos não)', () => {
   const ms = criarMissoes(null, criarInventario());
-  assert.equal(ms.receitaLiberada({ desde: 'combustivel' }), false);
-  assert.equal(ms.receitaLiberada({}), true);
+  ms.evento('falou');
+  ms.verificar(0.1, ctx('colina'));
+  assert.equal(ms.passo().tipo, 'chefe');
+  ms.evento('derrotou', { tag: 'ajudante' });
+  ms.evento('derrotou', { tag: 'outro:2' });
+  assert.equal(ms.passo().tipo, 'chefe');
+  ms.evento('derrotou', { tag: ms.tag() });
+  assert.equal(ms.passo().tipo, 'pegar');
 });
 
-test('o progresso das missões vai e volta do save', () => {
+test('o progresso das missões e os segredos vão e voltam do save', () => {
   const inv = criarInventario();
-  const ms = criarMissoes({ m: 3, p: 1, n: 2, pegos: ['fusivel:0', 'fusivel:2'], sistemas: [['energia', 1], ['casco', 1], ['motor', 1]], combustivel: 0, porta: false }, inv);
-  const s = validarSave(JSON.parse(JSON.stringify(montarSave({ inventario: [], blocos: [], fogueiras: [], missao: ms.serializar() }))));
-  assert.deepEqual(s.missao.pegos, ['fusivel:0', 'fusivel:2']);
-  assert.equal(s.missao.m, 3);
-  const de_novo = criarMissoes(s.missao, inv);
-  assert.equal(de_novo.passo().tipo, 'achar');
-  assert.equal(de_novo.progresso(), '⚡ 2/3');
-  assert.equal(validarSave({ ...s, missao: { m: 'x' } }).missao, null);
+  const ms = criarMissoes({ v: VERSAO_CAMPANHA, m: 2, p: 1, n: 0, pegos: [], sistemas: [['energia', 1], ['motor', 1]], combustivel: 0, porta: false }, inv);
+  const s = validarSave(JSON.parse(JSON.stringify(montarSave({ inventario: [], blocos: [], fogueiras: [], missao: ms.serializar(), segredos: ['gravador2', 'monolito1', 'inventado'] }))));
+  assert.equal(s.missao.m, 2);
+  assert.deepEqual(s.segredos, ['gravador2', 'monolito1']);
+  assert.equal(criarMissoes(s.missao, inv).missao().id, 'antena');
+  // save da campanha antiga (12 missões, sem "v"): a campanha recomeça, o resto continua
+  const antigo = validarSave({ ...s, missao: { m: 9, p: 0, n: 0, pegos: [], sistemas: [], combustivel: 0, porta: false } });
+  assert.equal(antigo.missao, null);
+});
+
+test('os segredos são escondidos e cada um tem lugar e mensagem', () => {
+  assert.ok(SEGREDOS.length >= 5);
+  for (const sg of SEGREDOS) {
+    assert.ok(sg.msgs && sg.msgs.length, sg.id);
+    if (sg.tipo === 'monolitos') for (const id of sg.toques) assert.ok(LOCAIS[id], id);
+    else assert.ok(Number.isFinite(sg.x) && Number.isFinite(sg.z), sg.id);
+    if (sg.item) assert.ok(ITENS[sg.item], sg.item);
+  }
+});
+
+test('receitas sem "desde" aparecem sempre', () => {
+  const ms = criarMissoes(null, criarInventario());
+  assert.equal(ms.receitaLiberada({}), true);
 });
