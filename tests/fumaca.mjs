@@ -181,7 +181,7 @@ async function testar(nome, largura, altura) {
   }
 
   if (nome === 'iphone') { await testarColeta(page, toque, conferir, nome); await testarMissoes(page, toque, conferir, nome); }
-  if (nome === 'ipad') await testarAliensMapaVolta(page, toque, conferir, nome);
+  if (nome === 'ipad') { await testarAliensMapaVolta(page, toque, conferir, nome); await testarRifle(page, toque, conferir, nome); }
 
   conferir(erros.length === 0, `sem erros no console${erros.length ? ': ' + erros.slice(0, 3).join(' | ') : ''}`);
   await ctx.close();
@@ -320,7 +320,7 @@ async function testarMissoes(page, toque, conferir, nome) {
   conferir((await passo()).tipo === 'pegar', 'derrotando os 4, a bateria aparece');
 
   // 3. pegar a bateria (chegando perto, o botão vira "Pegar")
-  const pc = await page.evaluate(() => { const p = window.__rumo.pecas.lista[0]; return p && { x: p.x, z: p.z, item: p.item }; });
+  const pc = await page.evaluate(() => { const p = window.__rumo.pecas.lista.find((x) => x.item === 'bateria'); return p && { x: p.x, z: p.z, item: p.item }; });
   await irPara(pc.x + 0.8, pc.z);
   await esperar(400);
   const textoPegar = await page.locator('#btn-acao-texto').textContent();
@@ -417,6 +417,67 @@ async function testarMissoes(page, toque, conferir, nome) {
   await tocar('#btn-final-explorar');
   const r3 = await page.evaluate(() => ({ estado: window.__rumo.estado, fim: window.__rumo.missoes.fim }));
   conferir(r3.estado === 'jogando' && r3.fim, '"Continuar explorando" volta para Lúmen com as missões completas');
+}
+
+// O esqueleto perto da nave e o Rifle de raio: pegar, trocar de arma pelo botão, carregar 2 s e o tiro forte.
+async function testarRifle(page, toque, conferir, nome) {
+  console.log('-- esqueleto e Rifle de raio');
+  const centro = async (sel) => { const l = page.locator(sel); await l.scrollIntoViewIfNeeded(); const b = await l.boundingBox(); return [b.x + b.width / 2, b.y + b.height / 2]; };
+  const tocar = async (sel) => { const [x, y] = await centro(sel); await page.touchscreen.tap(x, y); await esperar(300); };
+  conferir(!(await page.locator('#btn-trocar-arma').isVisible()), 'sem o rifle, não tem botão de trocar de arma');
+  const perto = await page.evaluate(() => {
+    const r = window.__rumo, e = r.locais && r.pecas.lista.find((p) => p.id === 'rifle');
+    if (!e) return null;
+    const dNave = Math.hypot(e.x - r.nave.centro.x, e.z - r.nave.centro.z);
+    r.jogador.reposicionar(e.x - 1.2, e.z + 0.5, 0);
+    return dNave;
+  });
+  conferir(perto !== null && perto < 40, `o rifle está no chão ao lado do esqueleto, perto da nave (${perto && perto.toFixed(0)} m)`);
+  await esperar(500);
+  await page.screenshot({ path: join(pastaCapturas, `${nome}-esqueleto.png`) });
+  const texto = await page.locator('#btn-acao-texto').textContent();
+  await tocar('#btn-acao');
+  const tem = await page.evaluate(() => window.__rumo.inventario.quantos('rifle'));
+  conferir(texto.startsWith('Pegar') && tem === 1 && await page.locator('#btn-trocar-arma').isVisible(), `"${texto}": pegou o rifle e apareceu o botão de trocar de arma`);
+  await tocar('#btn-trocar-arma');
+  await esperar(500);
+  conferir(await page.evaluate(() => window.__rumo.arma.atual) === 'rifle', 'o botão troca para o Rifle de raio (uma arma de cada vez)');
+  await page.screenshot({ path: join(pastaCapturas, `${nome}-rifle.png`) });
+
+  // um Rastejador parado na frente: segurar só 1 s não atira; segurando 2 s o rifle carrega e derruba com um tiro
+  await page.evaluate(() => {
+    const r = window.__rumo, j = r.jogador;
+    j.reposicionar(60, 60, 0);
+    const c = r.criaturas.lista.find((x) => x.tipo === 'rastejador' && x.vivo);
+    window.__alvoRifle = c;
+    c.vida = c.d.vida;
+    c.pos.set(60, 0, 52); c.pos.y = r.grade.alturaEm(60, 52);
+    c.d = { ...c.d, visao: 0, dano: 0 }; c.estado = 'passeando'; c.casa.set(60, 0, 52); c.alvoX = 60; c.alvoZ = 52; c.espera = 99;
+  });
+  await esperar(300);
+  await page.evaluate(() => {
+    const r = window.__rumo, j = r.jogador, c = window.__alvoRifle;
+    const dx = c.pos.x - j.pos.x, dz = c.pos.z - j.pos.z, dy = c.pos.y + 0.6 - (j.pos.y + 1.62);
+    j.girar(Math.atan2(dx, -dz) - j.rumo, Math.atan2(dy, Math.hypot(dx, dz)) - j.inclinacao);
+  });
+  const [bx, by] = await centro('#btn-atirar');
+  await toque('touchStart', [[bx, by, 31]]);
+  await esperar(1000);
+  const meio = await page.evaluate(() => ({ carga: window.__rumo.arma.carga, vida: window.__alvoRifle.vida }));
+  await toque('touchEnd', []);
+  await esperar(300);
+  conferir(meio.carga > 0.3 && meio.carga < 0.8 && meio.vida === 3, `segurando 1 s o rifle está carregando (${Math.round(meio.carga * 100)}%) e ainda não atirou`);
+  await toque('touchStart', [[bx, by, 32]]);
+  await esperar(1500);
+  await page.screenshot({ path: join(pastaCapturas, `${nome}-rifle-carregando.png`) });
+  await esperar(1100);
+  await toque('touchEnd', []);
+  await esperar(1500);
+  const depois = await page.evaluate(() => ({ vivo: window.__alvoRifle.vivo, vida: window.__alvoRifle.vida }));
+  conferir(!depois.vivo || depois.vida <= 0, 'segurando 2 s o rifle dispara e derruba o Rastejador com um tiro só');
+  await tocar('#btn-trocar-arma');
+  await esperar(500);
+  conferir(await page.evaluate(() => window.__rumo.arma.atual) === 'pistola', 'o botão troca de volta para o Desintegrador');
 }
 
 // Aliens (atirar até cair, levar mordida, desmaiar), mapa e dar a volta no mundo.

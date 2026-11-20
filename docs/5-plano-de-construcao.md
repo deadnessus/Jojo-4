@@ -78,6 +78,14 @@ O maior risco de um jogo de tiro em primeira pessoa no toque é o **controle ser
 - **Endereços de teste:** `?debug=1` mostra quadros por segundo, chamadas de desenho e triângulos; `?visual=liso` ou `?visual=pixelado`; `?hora=0.75` muda a hora do céu (0,25 nasce, 0,5 meio-dia, 0,75 pôr do sol).
 - **Verificador do queres.games:** `node .claude/skills/preparar-jogo-para-queres-games/verificar-jogo.mjs .`
 
+## O esqueleto e o Rifle de raio (pedido do dono, 20/11/2026)
+
+Decisão D26. Perto da nave, ao lado da trilha do lago (`LOCAIS.esqueleto` em `src/dados/locais.js`), fica o traje do Tavares com o esqueleto visto pelo vidro do capacete (construção `esqueleto` em `src/mundo/locais.js`) e o gravador. O **Rifle de raio** fica no chão ao lado (peça "extra" em `src/entidades/pecas.js`, que não aparece na ⭐ das missões). Ao chegar perto, a ÍRIS avisa; ao pegar, toca o "Registro 1 de 12" do gravador.
+
+- **Armas** (`src/entidades/arma.js`): `TEMPO_CARGA = 2` e `DANO = { pistola: 1, rifle: 12, respingo: 5 }`. Segurando o tiro, a carga sobe (barra rosa embaixo da mira, bobinas do rifle acendem, zumbido que sobe) e dispara sozinha quando enche; soltando antes, descarrega. Depois do tiro, 0,7 s de espera. O raio é grosso, empurra os bichos e estoura onde bate.
+- **Trocar de arma:** botão `btn-trocar-arma` (aparece só com o rifle; mostra o ícone da outra arma), tecla R (ou 1 e 2), LB no controle. A troca leva 0,4 s (abaixa uma, sobe a outra) e não dá para atirar no meio.
+- **Teste de fumaça (iPad):** pegar o rifle, botão de trocar, segurar 1 s (carrega, não atira) e 2 s (derruba um Rastejador com um tiro), trocar de volta.
+
 ## Missões para reconstruir a nave (pedido do dono, 20/11/2026)
 
 Decisões D24 e D25. A campanha inteira acontece no Vale que dá a volta (512 m), com os lugares longe uns dos outros para dar caminhada. Os textos das missões são da ÍRIS e aparecem na caixa do canto (toque nela para ver a aba 📜 Missões da mochila); a ⭐ da bússola e do mapa mostra para onde ir.
@@ -101,7 +109,7 @@ Decisões D24 e D25. A campanha inteira acontece no Vale que dá a volta (512 m)
 - **Relevo novo:** chão chato para a Base, as Ruínas, o Ninho e o Observatório, e a operação `cratera` (fundo chato e borda levantada).
 - **Save versão 3:** guarda a missão, o passo, a contagem, as peças já pegas, os sistemas consertados, o tanque e se a porta das Ruínas está aberta (só números e códigos). Saves antigos começam a campanha do começo, com a mochila e as construções.
 - **Teste de fumaça (iPhone):** falar com a ÍRIS, chegar na colina, derrotar os 4 Rastejadores, pegar e instalar a bateria, aba Missões e receitas novas, barra de vida do chefe, cristais do Guardião, abrir a porta das Ruínas, save versão 3, decolar, final, créditos e voltar a explorar. Também confere o botão de atirar na direita (o padrão de novo, a pedido do dono; a esquerda ficou como opção).
-- **Ainda não tem:** comida que estraga, dia e noite, as outras regiões, o esqueleto e o alien que desistiu de voltar (subtramas do plano). Ficam para as próximas etapas.
+- **Ainda não tem:** comida que estraga, dia e noite, as outras regiões, os outros 11 registros do Tavares e o alien que desistiu de voltar (subtramas do plano). Ficam para as próximas etapas.
 
 ## Mundo que dá a volta, aliens e mapa (pedido do dono, 20/11/2026)
 

@@ -17,7 +17,7 @@ Naves como a Andorinha viajam entre estrelas aos **saltos**. Depois de cada salt
 - Você acorda nos destroços. A ÍRIS fala fraquinho: a bateria principal foi arrancada na queda.
 - **Kit de emergência:** 6 rações (duram muito, mas são só 6), uma lanterna e sementes de feijão.
 - Você sai da nave e vê o céu: o **Colosso**, um planeta gigante listrado, ocupa um pedaço enorme do céu.
-- **O esqueleto:** perto da nave, um traje espacial antigo, com um esqueleto dentro do capacete. Ao lado, um **Desintegrador** (arma espacial que recarrega sozinha) e um gravador: *"Registro 1 de 12, Expedição Cruzeiro. Meu nome é Tavares..."* Quem era ele? Como chegou aqui? Começa o mistério. (O nome da expedição vem do Cruzeiro do Sul, a constelação que os navegadores usavam para achar o caminho.)
+- **O esqueleto:** perto da nave, um traje espacial antigo, com um esqueleto dentro do capacete. Ao lado, um **Rifle de raio** (arma grande de tiro carregado; pedido do dono, D26: você já começa com o Desintegrador) e um gravador: *"Registro 1 de 12, Expedição Cruzeiro. Meu nome é Tavares..."* Quem era ele? Como chegou aqui? Começa o mistério. (O nome da expedição vem do Cruzeiro do Sul, a constelação que os navegadores usavam para achar o caminho.)
 - Primeiros bichos: os **Saltitos** (inofensivos) e depois os **Rastejadores** (o primeiro inimigo).
 - Primeira fogueira, primeiras frutas, primeira noite: a floresta do outro lado do lago **brilha no escuro**.
 - **Primeira peça:** achar a **bateria principal**, que caiu numa colina perto do lago, num ninho de Rastejadores. Com a bateria no lugar: luz, porta, oficina, geladeira e scanner voltam a funcionar.

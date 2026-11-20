@@ -69,12 +69,12 @@ Inspiração Quake 2 (armas diferentes para situações diferentes), mas com car
 
 | Arma | Como funciona | Onde |
 |---|---|---|
-| **Desintegrador** | Tiro de energia, recarrega sozinho, superaquece | Com o esqueleto do Tavares (Ato 1) |
+| **Desintegrador** | Tiro de energia, recarrega sozinho, superaquece | Já vem com você desde o começo |
 | **Chave-laser** | Ferramenta de perto: corta cipó, abre caixas, golpe corpo a corpo | Kit da nave |
 | **Atordoador** | Anel elétrico que paralisa bichos grandes e robôs por alguns segundos | Base Cruzeiro |
 | **Dispersor** | Rajada de curta distância (tipo espingarda), usa células de energia | Fabricado na oficina |
 | **Lança-luz** | Granada de luz que espanta bichos (muito boa contra Rastejadores e Planadores) | Fabricada (cristal pequeno) |
-| **Rifle de raio** | Tiro carregado de longe, forte contra chefes e robôs | Estação K-7 |
+| **Rifle de raio** | Tiro carregado: segurando 2 segundos, solta um raio forte (dano 12, e 5 em quem está perto). Botão para trocar de arma | Com o esqueleto do Tavares, perto da nave (pedido do dono, D26) |
 
 - **Mira assistida:** no toque, a mira "gruda" de leve no alvo mais próximo do centro (mais forte no modo Explorador). **Não há tiro automático**: quem atira é sempre a criança. Decisão D12.
 - **Bichos derrotados** caem, somem numa nuvenzinha e **deixam cair itens** (carne, cristais, materiais); **robôs** viram sucata. Dá para **caçar** para comer. Decisões D4 e D5.
